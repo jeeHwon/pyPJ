@@ -17,15 +17,22 @@ with urlopen(url) as doc:
     last_page = s[-1]
 
 # 전체 페이지 읽어오기(tqdm으로 감싸서 progress bar 출력)
+# df = pd.DataFrame()
+# sise_url = 'https://finance.naver.com/item/sise_day.nhn?code={}'.format(ticker)
+# for page in tqdm(range(1, int(last_page)+1)):
+#     page_url = '{}&page={}'.format(sise_url, page)
+#     df = df.append(pd.read_html(page_url, header=0)[0])
+
+# 240일 정보만 가져오기(tqdm으로 감싸서 progress bar 출력)
 df = pd.DataFrame()
 sise_url = 'https://finance.naver.com/item/sise_day.nhn?code={}'.format(ticker)
-for page in tqdm(range(1, int(last_page)+1)):
+for page in tqdm(range(1, 17)):
     page_url = '{}&page={}'.format(sise_url, page)
     df = df.append(pd.read_html(page_url, header=0)[0])
 
 # 차트 출력 위해 데이터프레임 가공하기
 df = df.dropna()
-df = df.iloc[0:30]
+df = df.iloc[0:240]
 
 df = df.rename(columns={'날짜':'Date', '시가':'Open', '고가':'High', '저가':'Low', '종가':'Close', '거래량':'Volume'})
 df = df.sort_values(by='Date')
@@ -33,7 +40,7 @@ df.index = pd.to_datetime(df.Date) # error
 df = df[['Open', 'High', 'Low', 'Close', 'Volume']]
 # mpf.plot(df, title="Celltrion candle chart", type='candle')
 
-kwargs = dict(title='{} customized chart'.format(ticker), type='candle', mav=(2,4,6), volume=True, ylabel='ohlc candle')
+kwargs = dict(title='{} customized chart'.format(ticker), type='candle', mav=(5,20,120), volume=True, ylabel='ohlc candle')
 mc = mpf.make_marketcolors(up='r', down='b', inherit=True)
 s = mpf.make_mpf_style(marketcolors=mc)
 mpf.plot(df,**kwargs, style=s)
