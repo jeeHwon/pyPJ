@@ -96,27 +96,28 @@ class DBUpdater:
             df = pd.DataFrame()
             pages = min(int(lastpage), pages_to_fetch)
             
-            # for page in range(1, pages+1):
-            for page in range(1, 5):
+
+            for page in range(1, pages+1):
                 pg_url = '{}&page={}'.format(url, page)
                 df = df.append(pd.read_html(pg_url, header=0)[0])
                 tmnow = datetime.now().strftime('%Y-%m-%d %H:%M')
                 print('[{}] {} ({}) : {:04d}/{:04d} pages are dowloading...'.format(tmnow, company, code, page, pages), end='\r')
+                
             df = df.rename(columns={'날짜':'date', '종가':'close', '전일비':'diff', '시가':'open', '고가':'high', '저가':'low', '거래량':'volume'})
             df['date'] = df['date'].replace('.','-')
-            df.dropna()
+            df = df.dropna()
             df[['close','diff','open','high','low','volume']] = df[['close','diff','open','high','low','volume']].astype(int)
-            df = df[['close','diff','open','high','low','volume']]
+            df = df[['date','open','high','low','close','diff','volume']]
+            
         except Exception as e:
             print('Exception occured : ', str(e))
             return None
         return df
-            
 
 
     def replace_into_db(self, df, num, code, company):
         """네이버 금융에서 읽어온 주식 시세를 DB에 replace"""
-        with self.conn.cursor as curs:
+        with self.conn.cursor() as curs:
             for r in df.itertuples():
                 sql = f"replace into daily_price values ('{code}', '{r.date}', {r.open}, {r.high}, {r.low}, {r.close}, {r.diff}, {r.volume})"
                 curs.execute(sql)
