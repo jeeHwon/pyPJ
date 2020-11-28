@@ -1,8 +1,14 @@
 import matplotlib.pyplot as plt 
 from Investar import Analyzer
 
+# ---------------Input area---------------
+STOCK = '두산중공업'
+START_DATE = '2019-1-1'
+END_DATE = ''
+# ----------------------------------------
+
 mk = Analyzer.MarketDB()
-df = mk.get_daily_price('두산중공업', '2019-01-02')
+df = mk.get_daily_price(STOCK, START_DATE)
 
 df['MA20'] = df['close'].rolling(window=20).mean()
 df['stddev'] = df['close'].rolling(window=20).std()
@@ -26,7 +32,7 @@ df = df[19:]
 
 plt.figure(figsize=(9, 8))
 plt.subplot(2, 1, 1)
-plt.title('NAVER Bollinger Band(20 day, 2 std) Trend Following')
+plt.title('{} Bollinger Band(20 day, 2 std) Trend Following'.format(STOCK))
 plt.plot(df.index, df['close'], color='#0000ff', label='Close')
 plt.plot(df.index, df['upper'], 'r--', label='Upper band')
 plt.plot(df.index, df['MA20'], 'k--', label='Moving average 20')
@@ -51,4 +57,3 @@ for i in range(len(df.close)):
 plt.grid(True)
 plt.legend(loc='best')
 plt.show()
-

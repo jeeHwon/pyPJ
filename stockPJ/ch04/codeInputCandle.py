@@ -33,6 +33,7 @@ for page in tqdm(range(1, 17)):
 # 차트 출력 위해 데이터프레임 가공하기
 df = df.dropna()
 df = df.iloc[0:240]
+print(df)
 
 df = df.rename(columns={'날짜':'Date', '시가':'Open', '고가':'High', '저가':'Low', '종가':'Close', '거래량':'Volume'})
 df = df.sort_values(by='Date')
