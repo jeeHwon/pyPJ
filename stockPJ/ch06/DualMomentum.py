@@ -75,7 +75,7 @@ class DualMomentum:
             - start_date : 절대 모멘텀을 구할 매수일('2020-01-01')
             - end_date : 절대 모멘텀을 구할 매도일('2020-12-31')
         """
-        stocklist = list(rltv_momentum['code'])
+        stockList = list(rltv_momentum['code'])
         connection = pymysql.connect(host='localhost', port=3307, db='investar', user='root', passwd='asdf1038', autocommit=True)
         cursor = connection.cursor()
 
@@ -100,7 +100,7 @@ class DualMomentum:
         # KRX 종목별 수익률을 구해서 2차원 리스트 형태로 추가
         rows = []
         columns = ['code', 'company', 'old_price', 'new_price', 'returns']
-        for _, code in enumerate(self.mk.codes):
+        for _, code in enumerate(stockList):
             sql = f"select close from daily_price where code='{code}' and date='{start_date}'"
             cursor.execute(sql)
             result = cursor.fetchone()

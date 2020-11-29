@@ -5,8 +5,14 @@ from mpl_finance import candlestick_ohlc
 import matplotlib.dates as mdates
 from Investar import Analyzer
 
+# ---------------Input area---------------
+STOCK = '삼성전자'
+START_DATE = '2019-1-1'
+END_DATE = ''
+# ----------------------------------------
+
 mk = Analyzer.MarketDB()
-df = mk.get_daily_price('두산중공업', '2018-01-01')
+df = mk.get_daily_price(STOCK, START_DATE)
 
 ema60 = df.close.ewm(span=60).mean()    # 종가의 12주 지수 이동평균
 ema130 = df.close.ewm(span=130).mean()    # 종가의 26주 지수 이동평균
@@ -27,7 +33,7 @@ df = df.assign(fast_k=fast_k, slow_d=slow_d).dropna()
 
 plt.figure(figsize=(9,9))
 p1 = plt.subplot(3,1,1)
-plt.title('Triple Screen Trading - Triple Screen (NCSOFT)')
+plt.title('Triple Screen Trading - Triple Screen ({})'.format(STOCK))
 plt.grid(True)
 candlestick_ohlc(p1, ohlc.values, width=.6, colorup='red', colordown='blue')
 p1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m'))

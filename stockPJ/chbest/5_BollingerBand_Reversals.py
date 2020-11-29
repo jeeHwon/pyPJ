@@ -1,9 +1,14 @@
 import matplotlib.pyplot as plt
 from Investar import Analyzer
 
-name ="삼성전자"
+# ---------------Input area---------------
+STOCK = '두산중공업'
+START_DATE = '2019-1-1'
+END_DATE = ''
+# ----------------------------------------
+
 mk = Analyzer.MarketDB()
-df = mk.get_daily_price(name, '2018-11-01')
+df = mk.get_daily_price(STOCK, START_DATE)
 
 df['MA20'] = df['close'].rolling(window=20).mean()
 df['stddev'] = df['close'].rolling(window=20).std()
@@ -17,12 +22,17 @@ df = df.dropna()
 
 plt.figure(figsize=(9, 9))
 plt.subplot(3, 1, 1)
-plt.title('{} Bollinger Band(20 day, 2 std) - Reversals'.format(name))
+plt.title('{} Bollinger Band(20 day, 2 std) - Reversals'.format(STOCK))
 plt.plot(df.index, df['close'], 'b', label='Close')
 plt.plot(df.index, df['upper'], 'r--', label='Upper band')
 plt.plot(df.index, df['MA20'], 'k--', label='Moving average 20')
 plt.plot(df.index, df['lower'], 'c--', label='Lower band')
 plt.fill_between(df.index, df['upper'], df['lower'], color='0.9')
+for i in range(0, len(df.close)):
+    if df.PB.values[i] < 0.05 and df.IIP21.values[i] > 0:
+        plt.plot(df.index.values[i], df.close.values[i], 'r^')
+    elif df.PB.values[i] > 0.95 and df.IIP21.values[i] < 0:
+        plt.plot(df.index.values[i], df.close.values[i], 'bv')
 plt.legend(loc='best')
 
 plt.subplot(3, 1, 2)
@@ -32,6 +42,11 @@ plt.legend(loc='best')
 
 plt.subplot(3, 1, 3)
 plt.bar(df.index, df['IIP21'], color='g', label='II% 21day')
+for i in range(0, len(df.close)):
+    if df.PB.values[i] < 0.05 and df.IIP21.values[i] > 0:
+        plt.plot(df.index.values[i], 0, 'r^')
+    elif df.PB.values[i] > 0.95 and df.IIP21.values[i] < 0:
+        plt.plot(df.index.values[i], 0, 'bv')
 plt.grid(True)
 plt.legend(loc='best')
 plt.show()

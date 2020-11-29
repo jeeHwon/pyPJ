@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(function(){
+            $('#kind').change(function(){
+                alert($('option:selected;').index())
+            })
+
+
+
+        })
+    </script>
+</head>
+<body>
+<h1>점심메뉴</h1>
+<select name="kind" id="kind">
+    <option value="">--선택--</option>
+    <option value="">한식</option>
+    <option value="">중식</option>
+    <option value="">양식</option>
+</select>
+</body>
+</html>
