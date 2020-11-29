@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balance: {{ total }}</title>
+    <link rel="stylesheet" href="{% static 'balance/b_style.css' %}">
+</head>
+<body>
+    <table>
+        <tr>
+            <th>종목명</th>
+            <th>종목코드</th>
+            <th>현재가</th>
+            <th>주식수</th>
+            <th>등락률</th>
+            <th>평가금액</th>
+        </tr>
+        {% for row in rows %}
+        <tr>
+            {% for x in row %}
+            <td>{{ x }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        <tr>
+            <th colspan="3">계좌 잔고</th>
+            <th colspan="3">{{ total }}</th>
+        </tr>
+    </table>    
+</body>
+</html>
