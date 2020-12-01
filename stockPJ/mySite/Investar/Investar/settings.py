@@ -19,8 +19,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+def getPwd():
+    with open ('C:\\myKey\\django.txt') as f:
+        pw = f.readline()
+    return pw.strip()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'u4glpn4qgyuga@&5bu2qa(r^*)a2wv1&#anvqniqglzrlk_k=$'
+SECRET_KEY = getPwd()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
