@@ -1,5 +1,5 @@
 1. Analyzer 못 찾을때
-    Abalyzer.py 파일을 가상환경 라이브러리에 Investar 폴더에 넣어놓자
+    Analyzer.py 파일을 가상환경 라이브러리에 Investar 폴더에 넣어놓자
 
 
 2. plt 에서 한글 font깨질때
