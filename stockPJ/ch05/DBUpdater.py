@@ -11,7 +11,7 @@ import pymysql
 class DBUpdater:
     def __init__(self):
         """생성자 : MariaDB 연결 및 종목코드 딕셔너리 생성"""
-        self.conn = pymysql.connect(host='localhost', port=3307, db='investar', user='root', passwd='asdf1038', charset='utf8')
+        self.conn = pymysql.connect(host='localhost', port=3307, db='investar', user='root', passwd='1234', charset='utf8')
 
         with self.conn.cursor() as curs:
             sql = """

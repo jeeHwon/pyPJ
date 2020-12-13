@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from Investar import Analyzer
 
 # ---------------Input area---------------
-STOCK = 'NAVER'
+STOCK = '대한항공'
 START_DATE = '2019-1-1'
 END_DATE = ''
 # ----------------------------------------

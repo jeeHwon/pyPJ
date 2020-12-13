@@ -46,6 +46,7 @@ plt.yticks([-20, 0, 20, 40, 60, 80, 100, 120])
 for i in range(len(df.close)):
     if df.PB.values[i] > 0.8 and df.MFI10.values[i]>80:
         plt.plot(df.index.values[i], 0, 'r^')
+        print(df.index.values[i])
     elif df.PB.values[i] < 0.2 and df.MFI10.values[i]<20:
         plt.plot(df.index.values[i], 0, 'bv')  
 plt.grid(True)

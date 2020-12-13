@@ -1,0 +1,13 @@
+--myStoker timetable
+
+08:30 AutoLogin(AutoConnect.py)
+08:40 AutoTradingStart(EtfAlgoTrader.py)
+09:05~15:15 ETF Trading until meet target(EtfAlgoTrader.py)
+15:15~15:20 All sell(EtfAlgoTrader.py)
+15:20 AutoTradingEnd(EtfAlgoTrader.py)
+
+17:00 dbupdate
+
+19:00 listup(dualmomentum)
+
+21:00 message(tomorrow buylist)
