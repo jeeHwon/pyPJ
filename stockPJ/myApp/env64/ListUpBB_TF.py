@@ -4,6 +4,12 @@ from jeelib import Analyzer1
 import pandas as pd
 import csv
 
+# ======================== ver 1.1 ========================
+
+# 업데이트 : 20.12.18
+# 현재 매일 250 ~ 300개의 종목수. 추세추종 줄이고, 반전매매 기법 추가 위해 수치 조정
+# %b : 0.8 -> 0.85
+# MFI : 80 -> 85
 
 mk = Analyzer1.MarketDB()
 url = 'https://kind.krx.co.kr/corpgeneral/corpList.do?method=download&serachType=13'
@@ -41,7 +47,7 @@ for c in allCodes:
     # break
 
     try:
-        if df.PB.values[len(df.close)-1] > 0.8 and df.MFI10.values[len(df.close)-1]>80:
+        if df.PB.values[len(df.close)-1] > 0.85 and df.MFI10.values[len(df.close)-1]>85:
             buyok = buyok + 1
             buylist.append("A"+c)
         else:
