@@ -18,19 +18,17 @@ slack = Slacker(getPwd())
 # Karen karen   
 # 지 Jee    
 
-name = ['chul', 'han', 'baek','song','lee','jung','choi','karen','jee']
-
-
-columns = ['WEEKS', 'STAGE', '_BAEK', '_CHOI','_CHUL','__HAN','__JEE','_JUNG','KAREN','__LEE','_SONG']
+columns = ['WEEKS', 'STAGE', '_BAEK', '_CHOI','_CHUL','__HAN','__JEE','_JUNG','KAREN','_SONG']
 rows = []
-#            ['WEEKS', 'STAGE', '_BAEK', '_CHOI', '_CHUL', '__HAN', '__JEE', '_JUNG', 'KAREN', '__LEE', '_SONG']
-rows.append(['____1', '____7', '_1157', '_____', '_2941', '_1110', '_1316', '_4344', '_1065', '_____', '_1152' ])
-rows.append(['____2', '____8', '10250', '_____', '_____', '_4673', '_1011', '_2775', '_1193', '_____', '_1712' ])
+#            ['WEEKS', 'STAGE', '_BAEK', '_CHOI', '_CHUL', '__HAN', '__JEE', '_JUNG', 'KAREN', '_SONG']
+rows.append(['____1', '____7', '_1157', '_____', '_2941', '_1110', '_1316', '_4344', '_1065', '_1152' ])
+rows.append(['____2', '____8', '10250', '_____', '_____', '_4673', '_1011', '_2775', '_1193', '_1712' ])
+rows.append(['____3', '____9', '_1929', '_____', '_____', '_1929', '_2581', '_2581', '_1978', '_____' ])
 df = pd.DataFrame(rows, columns=columns)
 print(df)
 file_name = 'studystats'
-df_slack = df.to_csv('studyAlgo/' + file_name + '.csv', encoding = 'euc-kr', index=False, sep='\t')
+df_slack = df.to_csv('stockPJ/studyalgo/'+file_name + '.csv', encoding = 'euc-kr', index=False, sep='\t')
 
 # 실제 봇으로 공지 할때만 활성화 시킬것
-# slack.files.upload('studyAlgo/' + file_name + '.csv', channels='#stats')
+# slack.files.upload('stockPJ/studyalgo/'+file_name + '.csv', channels='#stats')
 
