@@ -5,9 +5,11 @@ df3 = pd.read_csv("C:/myData/STStatus/stat2020-12-16.csv")
 df4 = pd.read_csv("C:/myData/STStatus/stat2020-12-15.csv")
 df5 = pd.read_csv("C:/myData/STStatus/stat2020-12-14.csv")
 
+df6 = pd.read_csv("C:/myData/STStatus/stat2020-12-21.csv")
+
 # 분석결과(201220) : 일주일 데이터 분석 결과 최적의 손절라인: X / 익절라인: 2.2%
 
-dftmp = pd.concat([df1,df2,df3,df4,df5])
+dftmp = pd.concat([df1,df2,df3,df4,df5,df6])
 # print(dftmp)
 dftmp['HIGH_RATE'] = (dftmp['HIGH']-dftmp['BUY_UNIT'])/ dftmp['BUY_UNIT'] * 100
 dftmp['LOW_RATE'] = (dftmp['LOW']-dftmp['BUY_UNIT'])/ dftmp['BUY_UNIT'] * 100

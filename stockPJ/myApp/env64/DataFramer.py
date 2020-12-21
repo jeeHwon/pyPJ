@@ -2,8 +2,9 @@ import pandas as pd
 import math
 from datetime import datetime
 
-date = datetime.today().strftime('%Y-%m-%d')
-df = pd.read_csv("C:/myData/STResult/result{}.csv".format(date))
+# date = datetime.today().strftime('%Y-%m-%d')
+date = "2020-12-21"
+df = pd.read_csv("C:/myData/STResult/result{}.csv".format(date), error_bad_lines=False)
 # print(df)
 
 columns = ['DATE', 'CODE', 'NAME', 'BUY', 'SELL', 'QTY', 'FEE', 'OPEN','HIGH', 'LOW', 'CLOSE']
@@ -11,8 +12,8 @@ rows = []
 
 # 처음 한줄 추가하고
 rows.append([df.iloc[0]['DATE'], df.iloc[0]['CODE'], df.iloc[0]['NAME'], df.iloc[0]['BUY']* df.iloc[0]['QTY'], 
-    df.iloc[0]['SELL']* df.iloc[0]['QTY'], df.iloc[0]['QTY'],(df.iloc[0]['BUY']* df.iloc[0]['QTY']+
-    df.iloc[0]['SELL']* df.iloc[0]['QTY'])*0.00015, df.iloc[0]['OPEN'], df.iloc[0]['HIGH'],
+    df.iloc[0]['SELL']* df.iloc[0]['QTY'], df.iloc[0]['QTY'],(df.iloc[0]['BUY']* df.iloc[0]['QTY'])*0.00019+
+    (df.iloc[0]['SELL']* df.iloc[0]['QTY'])*0.000269, df.iloc[0]['OPEN'], df.iloc[0]['HIGH'],
     df.iloc[0]['LOW'], df.iloc[0]['CLOSE']])
 for i in range(1, df.shape[0]): # df의 나머지 행에 접근
 # for i in range(1, 10): # df의 나머지 행에 접근
@@ -22,21 +23,20 @@ for i in range(1, df.shape[0]): # df의 나머지 행에 접근
             rows[a][3] = rows[a][3] + df.iloc[i]['BUY'] * df.iloc[i]['QTY']
             rows[a][4] = rows[a][4] + df.iloc[i]['SELL'] * df.iloc[i]['QTY']
             rows[a][5] = rows[a][5] + df.iloc[i]['QTY']
-            rows[a][6] = rows[a][6] + df.iloc[i]['BUY'] * df.iloc[i]['QTY'] * 0.00015
-            rows[a][6] = rows[a][6] + df.iloc[i]['SELL'] * df.iloc[i]['QTY'] * 0.00015
-            rows[a][6] = rows[a][6] + df.iloc[i]['SELL'] * df.iloc[i]['QTY'] * 0.0025
+            rows[a][6] = rows[a][6] + df.iloc[i]['BUY'] * df.iloc[i]['QTY'] * 0.00019
+            rows[a][6] = rows[a][6] + df.iloc[i]['SELL'] * df.iloc[i]['QTY'] * 0.00269
             isIn = False
             break
     if isIn:
         rows.append([df.iloc[i]['DATE'], df.iloc[i]['CODE'], df.iloc[i]['NAME'], df.iloc[i]['BUY']* df.iloc[i]['QTY'],
-            df.iloc[i]['SELL']* df.iloc[i]['QTY'], df.iloc[i]['QTY'],(df.iloc[i]['BUY']* df.iloc[i]['QTY']+
-            df.iloc[i]['SELL']* df.iloc[i]['QTY'])*0.00015,df.iloc[i]['OPEN'],df.iloc[i]['HIGH'],
+            df.iloc[i]['SELL']* df.iloc[i]['QTY'], df.iloc[i]['QTY'],(df.iloc[i]['BUY']* df.iloc[i]['QTY'])*0.00019+
+            (df.iloc[i]['SELL']* df.iloc[i]['QTY'])*0.000269,df.iloc[i]['OPEN'],df.iloc[i]['HIGH'],
             df.iloc[i]['LOW'],df.iloc[i]['CLOSE']])
 
 
 df2 = pd.DataFrame(rows, columns=columns)
-# print(df2)
-df2['QTY'] = df2['QTY']//2    # 자동입력시 활성회, 수동입력시 비활성화
+print(df2)
+# df2['QTY'] = df2['QTY']//2    # 자동입력시 활성회, 수동입력시 비활성화
 tmp1 = []
 tmp2 = []
 tmp3 = []
