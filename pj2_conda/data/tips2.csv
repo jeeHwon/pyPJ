@@ -1,0 +1,11 @@
+day,total_bill,tip,smoker,time,size,tot
+Thur,34.3,6.7,No,Lunch,6,41.0
+Sat,7.74,1.44,Yes,Dinner,2,9.18
+Sun,20.69,5.0,No,Dinner,5,25.69
+Sat,17.92,4.08,No,Dinner,2,22.0
+Thur,11.17,1.5,No,Lunch,2,12.67
+Thur,13.51,2.0,Yes,Lunch,2,15.51
+Sun,23.1,4.0,Yes,Dinner,3,27.1
+Fri,40.17,4.73,Yes,Dinner,4,44.900000000000006
+Sun,13.39,2.61,No,Dinner,2,16.0
+Sat,20.29,3.21,Yes,Dinner,2,23.5
