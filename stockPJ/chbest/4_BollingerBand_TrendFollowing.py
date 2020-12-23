@@ -1,13 +1,17 @@
 import matplotlib.pyplot as plt 
-from Investar import Analyzer
+from jeelib import Analyzer1
+from matplotlib import font_manager, rc
 
+# 그래프 한글처리(from matplotlib import font_manager, rc)
+fontname = font_manager.FontProperties(fname='C://myData//Fonts///malgun.ttf').get_name()
+rc('font',family=fontname)
 # ---------------Input area---------------
-STOCK = 'NAVER'
-START_DATE = '2019-1-1'
+STOCK = '282880'
+START_DATE = '2020-1-1'
 END_DATE = ''
 # ----------------------------------------
 
-mk = Analyzer.MarketDB()
+mk = Analyzer1.MarketDB()
 df = mk.get_daily_price(STOCK, START_DATE)
 
 df['MA20'] = df['close'].rolling(window=20).mean()
