@@ -7,13 +7,8 @@ import time
 from urllib.request import urlopen
 import csv
 import os
-# ===AZ_0TdToRs.py===
-# 크레온 API 활용 금일 체결 내역을 받아와,
-# 날짜, 코드, 종목명, OHLC, 매수단가, 매도단가, 거래량의
-# Raw data를 res와 pls 파일로 나누어 저장
-
-# date = "2020-12-24"
-date = datetime.today().strftime('%Y-%m-%d')
+date = "2020-12-21"
+# date = datetime.today().strftime('%Y-%m-%d')
 
 cpCodeMgr = win32com.client.Dispatch('CpUtil.CpStockCode')  # 종목코드
 cpStatus  = win32com.client.Dispatch('CpUtil.CpCybos')

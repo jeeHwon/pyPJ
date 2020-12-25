@@ -3,13 +3,9 @@ import math
 from datetime import datetime
 import numpy as np
 from pandas.core.series import Series
-# ===AZ_1RsToSt.py===
-# env32에서 크레온 계정 통해 금일 체결내역을 저장한 res와 pls 파일을 읽어,
-# 날짜, 코드, 종목명, OHLC, 매수단가, 매도단가, 거래량, 손익, 수익률 컬럼의 데이터프레임으로 가공하여,
-# stat 파일로 저장
 
-# date = "2020-12-24"
-date = datetime.today().strftime('%Y-%m-%d')
+# date = datetime.today().strftime('%Y-%m-%d')
+date = "2020-12-21"
 df = pd.read_csv("C:/myData/TodayResult/res{}.csv".format(date), error_bad_lines=False)
 columns = ['DATE', 'CODE', 'NAME', 'OPEN','HIGH', 'LOW', 'CLOSE','BUY', 'SELL', 'QTY']
 rows = []

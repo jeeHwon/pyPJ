@@ -7,13 +7,6 @@ import time
 from urllib.request import urlopen
 import csv
 import os
-# ===AZ_0TdToRs.py===
-# 크레온 API 활용 금일 체결 내역을 받아와,
-# 날짜, 코드, 종목명, OHLC, 매수단가, 매도단가, 거래량의
-# Raw data를 res와 pls 파일로 나누어 저장
-
-# date = "2020-12-24"
-date = datetime.today().strftime('%Y-%m-%d')
 
 cpCodeMgr = win32com.client.Dispatch('CpUtil.CpStockCode')  # 종목코드
 cpStatus  = win32com.client.Dispatch('CpUtil.CpCybos')
@@ -23,9 +16,7 @@ cpOhlc = win32com.client.Dispatch("CpSysDib.StockChart")
 cpBalance = win32com.client.Dispatch('CpTrade.CpTd6033')    # 계좌 정보
 cpCash = win32com.client.Dispatch('CpTrade.CpTdNew5331A')   # 주문 가능 금액
 cpOrder = win32com.client.Dispatch('CpTrade.CpTd0311') 
-cpToday = win32com.client.Dispatch('CpTrade.CpTd5341')      # 금일 주문내역
-cpTodayPL = win32com.client.Dispatch('CpTrade.CpTd5342')    # 금일 체결기준 내역
-
+cpToday = win32com.client.Dispatch('CpTrade.CpTd5341') 
 try:
     # 크레온 플러스 시스템 점검 함수
     # 관리자 권한으로 프로세스 실행 여부
@@ -46,29 +37,32 @@ try:
     acc = cpTradeUtil.AccountNumber[0]
     accFlag = cpTradeUtil.GoodsList(acc, 1)
 
+    # 1)금일 데이터인 경우
     # 금일 주문내역 받아오기
     cpToday.SetInputValue(0, acc)           # 계좌번호
     cpToday.SetInputValue(1, accFlag[0])    # 상품관리구분코드
     cpToday.SetInputValue(4, 0)             # 순차정렬
     cpToday.SetInputValue(5, 20)            # 요청개수
 
-    columns = ['DATE', 'CODE', 'NAME', 'OPEN', 'HIGH', 'LOW', 'CLOSE', 'BUY', 'SELL', 'QTY']
+    # date = "2020-12-14" 오늘 날짜 자동 최신화
+    date = datetime.today().strftime('%Y-%m-%d')
+    columns = ['DATE', 'CODE', 'NAME', 'BUY', 'SELL', 'QTY', 'OPEN','HIGH', 'LOW', 'CLOSE']
     rows = []
     while True:
         cpToday.BlockRequest()
         print(cpToday.GetHeaderValue(6))
         count = cpToday.GetHeaderValue(6) # 수신 개수
-        # columns = ['DATE', 'CODE', 'NAME', 'OPEN','HIGH', 'LOW', 'CLOSE','BUY', 'SELL', 'QTY', 'PL', 'ROI' ]
+        # columns = ['DATE', 'CODE', 'NAME', 'BUY', 'SELL', 'RATE', 'RETURN', 'OPEN', 'HIGH', 'LOW', 'CLOSE']
         for i in range(count):
-            if cpToday.GetDataValue(9, i) > 0:      # 
+            if cpToday.GetDataValue(9, i) > 0:
                 code = cpToday.GetDataValue(3, i)   # 종목코드
                 name = cpToday.GetDataValue(4, i)   # 종목명
                 buy = 0
                 sell = 0
                 if cpToday.GetDataValue(35, i) == '2': # 매수일때
-                    buy = cpToday.GetDataValue(11, i)  # 매수단가
-                else:                                  # 매도일때
-                    sell = cpToday.GetDataValue(11, i) # 매도단가
+                    buy = cpToday.GetDataValue(11, i)  #매수단가
+                else:   # 매도일때
+                    sell = cpToday.GetDataValue(11, i)  #매도단가
                 qty = cpToday.GetDataValue(10, i)  #체결수량
                 # print(date, code, name, buy, sell, qty)
 
@@ -85,39 +79,13 @@ try:
                 high = cpOhlc.GetDataValue(2, 0)
                 low = cpOhlc.GetDataValue(3, 0)
                 close = cpOhlc.GetDataValue(4, 0)
-
-                rows.append([date, code, name, open, high, low, close, buy, sell, qty])
+                rows.append([date, code, name, buy, sell, qty, open, high, low, close])
 
         if not cpToday.Continue:
             break
 
-    cpTodayPL.SetInputValue(0, acc)           # 계좌번호
-    cpTodayPL.SetInputValue(1, accFlag[0])    # 상품관리구분코드
-    cpTodayPL.SetInputValue(2, 20)            # 요청개수
-    cpTodayPL.SetInputValue(3, "1")           # 요청일 구분코드 "1":금일 "2":전일(default)
-
-    columns2 = ['CODE','TYPE','PL']
-    rows2 = []
-    while True:
-        cpTodayPL.BlockRequest()
-        print(cpTodayPL.GetHeaderValue(8))
-        count = cpTodayPL.GetHeaderValue(8)   # 수신개수
-        medo = cpTodayPL.GetHeaderValue(9)    # 매도정산금합
-        mesu = cpTodayPL.GetHeaderValue(10)   # 매수정산금합
-
-        for i in range(count):
-            if cpTodayPL.GetDataValue(3, i) > 0:        # 체결수량
-                code = cpTodayPL.GetDataValue(0, i)     # 종목코드  
-                type = cpTodayPL.GetDataValue(10, i)    # 매매구분 "매도", "매수"
-                pl = cpTodayPL.GetDataValue(24, i)      # 정산금액
-                rows2.append([code, type, pl])
-        if not cpTodayPL.Continue:
-            break        
     df = pd.DataFrame(rows, columns=columns)
-    df.to_csv("C:/myData/TodayResult/res{}.csv".format(date))
-    df2 = pd.DataFrame(rows2, columns=columns2)
-    df2.to_csv("C:/myData/TodayResult/pls{}.csv".format(date))
-    print("UPDATE FINISHED")
+    df.to_csv("C:/myData/STResult/result{}.csv".format(date))
     time.sleep(10)
 except Exception as ex:
     print(str(ex))

@@ -5,7 +5,6 @@ from datetime import datetime
 import re
 import csv
 
-
 def get_comp_info():
     """company_info 테이블에서 읽어와서 codes에 저장"""
     sql = "select * from company_info"
@@ -78,125 +77,16 @@ def get_daily_price(code_in, start_date=None, end_date=None):
     df.index = df['date']
     return df.sort_index(ascending=False)
 
-# 매수 목표가 계산
-def get_target_price(kvalue):
-    """매수 목표가를 반환한다. code와 k값 (보통 0.5) 입력"""
-    try:
-        today_open = today['open']
-        lastday_high = lastday['high']
-        lastday_low = lastday['low']
-        target_price = today_open + (lastday_high - lastday_low) * kvalue
-        return target_price
-    except Exception as ex:
-        print("'get_target_price() -> exception!" + str(ex)+"'")
-        return None
-
-# 이동평균값 조회
-def get_movingaverage(window):
-    """인자로 받은 종목에 대한 이동평균가격을 반환한다."""
-    try:
-        lastday_date = lastday.name
-        closes = df['close'].sort_index()
-        ma = closes.rolling(window=window).mean()
-        return ma.loc[lastday_date]
-    except Exception as ex:
-        print('get_movingaverage() -> exception!' + str(ex)+"")
-        return None
-
-# 매도 목표가 계산
-def get_sell_price():
-    overline_price = buy_price*(1+overline*0.01)
-    underline_price = buy_price*(1+underline*0.01)
-
-    if today['low']>=underline_price:
-        if today['high'] >= overline_price:
-            return overline_price
-        else:
-            return today['close']
-    else:
-        return underline_price
-
-
-# # main
-# # 전역변수 
-# conn = pymysql.connect(host='localhost', port=3307, db='investar', user='root', passwd='1234', charset='utf8')
-# codes={}
-# symbol_list=[]
-# kvalue = 0.5
-# overline = 1.3
-# underline = -20.0
-
-# # DB 접속해 전체 코드:종목명을 codes에 저장
-# get_comp_info()
-
-# # 분석할 종목을 리스트에 추가
-# # 모든 종목 추가
-# # symbol_list.extend(codes.values())
-
-# # 볼린저밴드 추세추종 해당 종목 추가 
-# with open('C:/myApp/env64/BB_TF_buylist.csv', 'r', encoding='utf-8') as f:
-#     rdr = csv.reader(f) 
-#     for i,line in enumerate(rdr): 
-#         if i==0:
-#             for j in range(len(line)):
-#                 tmp = line[j].replace("A","")
-#                 symbol_list.append(tmp)
-
-# # 볼린저밴드 반전매매 해당 종목 추가 
-# # with open('C:/myApp/env64/BB_RV_buylist.csv', 'r', encoding='utf-8') as f:
-# #     rdr = csv.reader(f) 
-# #     for i,line in enumerate(rdr): 
-# #         if i==0:
-# #             for j in range(len(line)):
-# #                 tmp = line[j].replace("A","")
-# #                 symbol_list.append(tmp)
-            
-# print('리스트 종목 수:',len(symbol_list))            
-# total_roi = 0
-# ok_cnt = 0
-# err_cnt = 0
-# for i in range(len(symbol_list)):
-#     try:
-#         code = symbol_list[i]
-#         # 리스트에 있는 종목 1개에 대하여 BP 찾기
-#         # 1) 변동성 돌파 지점 (kvalue)
-#         df = get_daily_price(code)
-#         today = df.iloc[0]
-#         lastday = df.iloc[1]
-#         # print(df.head())
-
-#         target_price = get_target_price(kvalue)
-
-#         # 2) ma5 및 ma10 돌파지점
-#         ma5_price = get_movingaverage(5)
-#         ma10_price = get_movingaverage(10)
-
-#         # 3) BP 구하기
-#         buy_price = max([target_price, ma5_price, ma10_price])
-#         # print('bp',buy_price)
-
-#         # 리스트에 있는 종목 1개에 대하여 SP 찾기
-#         sell_price = get_sell_price()
-#         # print('sp',sell_price)
-
-#         # 리스트에 있는 종목 1개에 대하여 ROI 계산
-#         roi = (sell_price/buy_price-1)*100
-#         # print('roi',roi)
-#         total_roi = total_roi + roi
-#         ok_cnt += 1
-#         print(total_roi)
-#     except:
-#         err_cnt += 1
-# print(ok_cnt, err_cnt)
-# print(total_roi/ok_cnt)
-
 conn = pymysql.connect(host='localhost', port=3307, db='investar', user='root', passwd='1234', charset='utf8')
 codes={}
 symbol_list=[]
-kvalue = 0.5
-
 
 get_comp_info()
+
+# 모든 종목 추가
+# symbol_list.extend(codes.values())
+
+# 볼린저밴드 리스트 종목 추가
 with open('C:/myApp/env64/BB_TF_buylist.csv', 'r', encoding='utf-8') as f:
     rdr = csv.reader(f) 
     for i,line in enumerate(rdr): 
@@ -205,13 +95,12 @@ with open('C:/myApp/env64/BB_TF_buylist.csv', 'r', encoding='utf-8') as f:
                 tmp = line[j].replace("A","")
                 symbol_list.append(tmp)
 
-
-print('리스트 종목 수:',len(symbol_list))    
-
+print('리스트 종목 수:',len(symbol_list)) 
 columns = ['OVER', 'UNDER', 'ROI']
 rows = []
 overline = 20.0
 underline = -20.0
+kvalue = 0.30
 while overline <= 21.0:
     total_roi = 0
     ok_cnt = 0
@@ -224,21 +113,35 @@ while overline <= 21.0:
             df = get_daily_price(code)
             today = df.iloc[0]
             lastday = df.iloc[1]
-            # print(df.head())
 
-            target_price = get_target_price(kvalue)
+            today_open = today['open']
+            lastday_high = lastday['high']
+            lastday_low = lastday['low']
+            target_price = today_open + (lastday_high - lastday_low) * kvalue
 
             # 2) ma5 및 ma10 돌파지점
-            ma5_price = get_movingaverage(5)
-            ma10_price = get_movingaverage(10)
+            lastday_date = lastday.name
+            closes = df['close'].sort_index()
+            ma5 = closes.rolling(window=5).mean()
+            ma5_price = ma5.loc[lastday_date]
+            ma10 = closes.rolling(window=10).mean()
+            ma10_price = ma10.loc[lastday_date]
 
             # 3) BP 구하기
             buy_price = max([target_price, ma5_price, ma10_price])
             # print('bp',buy_price)
 
             # 리스트에 있는 종목 1개에 대하여 SP 찾기
-            sell_price = get_sell_price()
-            # print('sp',sell_price)
+            overline_price = buy_price*(1+overline*0.01)
+            underline_price = buy_price*(1+underline*0.01)
+
+            if today['low']>=underline_price:
+                if today['high'] >= overline_price:
+                    sell_price = overline_price
+                else:
+                    sell_price = today['close']
+            else:
+                sell_price = underline_price
 
             # 리스트에 있는 종목 1개에 대하여 ROI 계산
             roi = (sell_price/buy_price-1)*100
@@ -251,7 +154,7 @@ while overline <= 21.0:
     # print(ok_cnt, err_cnt)
     print(total_roi/ok_cnt)
     rows.append([overline, underline, total_roi/ok_cnt])
-    underline += -0.2
+    underline += -1.0
     if underline <= -25.0:
         overline += 0.1
         underline = -20.0
@@ -259,5 +162,6 @@ while overline <= 21.0:
 
 df2 = pd.DataFrame(rows, columns=columns).round(2)
 kname = int(kvalue*100)
-df2.to_csv("C:/myData/AZ_test_K{}.csv".format(kname))
+df2.to_csv("C:/myData/AZ_test.csv")
 print(df2)
+

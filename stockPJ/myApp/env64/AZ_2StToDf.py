@@ -13,11 +13,12 @@ df4 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-17.csv")
 df5 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-18.csv")
 df6 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-21.csv")
 df7 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-22.csv")
+df8 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-23.csv")
 
 # 분석결과(201220) : 일주일 데이터 분석 결과 최적의 손절라인: X / 익절라인: 2.2%
 # 분석결과(201222) : 손절라인:X / 익절라인: 1.3%
 
-dftmp = pd.concat([df1,df2,df3,df4,df5,df6,df7])
+dftmp = pd.concat([df1,df2,df3,df4,df5,df6,df7,df8])
 # print(dftmp)
 dftmp['HIGH_RATE'] = (dftmp['HIGH']-dftmp['BUY'])/ dftmp['BUY'] * 100
 dftmp['LOW_RATE'] = (dftmp['LOW']-dftmp['BUY'])/ dftmp['BUY'] * 100
@@ -41,7 +42,7 @@ df = pd.DataFrame({'DATE':date,'NAME':name,'HIGH': high, 'LOW': low, 'CLOSE':clo
 f = open('df_BestLine.csv','w', newline='')
 wr = csv.writer(f)
 
-xlist = numpy.arange(0.0, 20.0, 0.1)    # upline
+xlist = numpy.arange(0.0, 25.0, 0.1)    # upline
 ylist = numpy.arange(0.0, -20.0, -0.1)  # underline
 
 wr.writerow(xlist.round(2))

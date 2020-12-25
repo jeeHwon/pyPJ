@@ -16,7 +16,7 @@ rc('font',family=fontname)
 matplotlib.rcParams['axes.unicode_minus'] = False
 
 # 익절라인 범위
-xlist = numpy.arange(0.1, 20.0, 0.1)
+xlist = numpy.arange(0.1, 25.0, 0.1)
 
 df = pd.read_csv("df_BestLine.csv", error_bad_lines=False)
 df = df.set_index('0.0')
@@ -31,6 +31,6 @@ print('최대수익률:',df.max(axis=0).max())     # 최대 수익률
 print('익절라인:',df.max(axis=0).idxmax())  # 최적 익절라인
 print('손절라인:',df.max(axis=1).idxmax())  # 최적 손절라인
 pd.set_option('display.max_row', 500)
-print(df.loc[-18.3])
+print(df.loc[-19.9])
 
 plt.show()

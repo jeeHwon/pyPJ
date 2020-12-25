@@ -1,23 +1,18 @@
-import pandas as pd 
-import math
 from datetime import datetime
 import numpy as np
 from pandas.core.series import Series
+import pandas as pd 
 
 date = "2020-12-14"
-df = pd.read_csv("C:/myData/STStatus/stat{}.csv".format(date), error_bad_lines=False)
-
-df2 = pd.DataFrame({
-    'DATE':df['DATE'],
-    'CODE':df['CODE'],
-    'NAME':df['NAME'],
-    'OPEN':df['OPEN'],
-    'HIGH':df['HIGH'],
-    'LOW':df['LOW'],
-    'CLOSE':df['CLOSE'],
-    'BUY':df['BUY_UNIT'],
-    'SELL':df['SELL_UNIT'],
-    'QTY':df['QTY']
-})
-print(df2)
-df2.to_csv("C:/myData/TodayStatus/stat{}.csv".format(date), index = False)
+df = pd.read_csv("C:/myData/STStatus/res{}.csv".format(date), error_bad_lines=False)
+date = df['DATE']
+code = df['CODE']
+name = df['NAME']
+open = df['OPEN']
+high = df['HIGH']
+low = df['LOW']
+close = df['CLOSE']
+buy = df['BUY']/df['QTY']
+sell = df['SELL']/df['QTY']
+qty = df['QTY']
+df2 = pd.DataFrame()
