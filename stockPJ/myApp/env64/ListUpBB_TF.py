@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 from jeelib import Analyzer1
 import pandas as pd
 import csv
+from datetime import datetime
 
-# ======================== ver 1.1 ========================
-
-# 업데이트 : 20.12.18
-# 현재 매일 250 ~ 300개의 종목수. 추세추종 줄이고, 반전매매 기법 추가 위해 수치 조정
-# %b : 0.8 -> 0.85
-# MFI : 80 -> 85
+# ======================== ver 1.2 ========================
+# 업데이트 : 20.12.25
+# 경로 수정: C:/myData/BuyList/BB_TF_buylist.csv 
+# %b : 0.85
+# MFI : 85
 
 mk = Analyzer1.MarketDB()
 url = 'https://kind.krx.co.kr/corpgeneral/corpList.do?method=download&serachType=13'
@@ -23,6 +23,7 @@ buyok = 0
 buyno = 0
 buyerr = 0
 buylist = []
+date = 0
 for c in allCodes:
     df = mk.get_daily_price(c, '2020-11-01')
     df['MA20'] = df['close'].rolling(window=20).mean()
@@ -43,8 +44,6 @@ for c in allCodes:
     df['MFR'] = df.PMF.rolling(window=10).sum() / df.NMF.rolling(window=10).sum()
     df['MFI10'] = 100 - 100 / (1 + df['MFR'])
     df = df[19:]
-    # print(df.date.values[-1])
-    # break
 
     try:
         if df.PB.values[len(df.close)-1] > 0.85 and df.MFI10.values[len(df.close)-1]>85:
@@ -55,7 +54,7 @@ for c in allCodes:
     except:
         buyerr = buyerr + 1
 print(buyok, buyno, buyerr)
-file_name = 'C:/myApp/env64/BB_TF_buylist.csv'
+file_name = 'C:/myData/BuyList/BB_TF_buylist.csv'
 with open(file_name, 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(buylist)

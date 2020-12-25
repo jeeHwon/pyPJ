@@ -4,9 +4,9 @@ from jeelib import Analyzer1
 import pandas as pd
 import csv
 
-# ======================== ver 1.0 ========================
-#
-# 업데이트 : 20.12.18
+# ======================== ver 1.2 ========================
+# 업데이트 : 20.12.25
+# 경로 수정: C:/myData/BuyList/BB_TF_buylist.csv 
 # %b : 0.10
 # IIP21 : 0
 
@@ -43,7 +43,7 @@ for c in allCodes:
     except:
         buyerr = buyerr + 1
 print(buyok, buyno, buyerr)
-file_name = 'C:/myApp/env64/BB_RV_buylist.csv'
+file_name = 'C:/myData/BuyList/BB_RV_buylist.csv'
 with open(file_name, 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(buylist)
