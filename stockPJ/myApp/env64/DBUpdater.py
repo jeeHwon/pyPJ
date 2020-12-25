@@ -1,11 +1,9 @@
 import pandas as pd
 from bs4 import BeautifulSoup
 import pymysql, calendar, json
-import pymysql
 from urllib.request import urlopen
 from datetime import datetime
 from threading import Timer
-import pymysql
 
 
 class DBUpdater:
