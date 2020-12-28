@@ -1,25 +1,25 @@
 import pandas as pd 
 import csv
 import numpy
+import os
+
 # ===AZ_2StToDf.py===
 # 가공된 stat 파일을 읽어,
 # 각 날짜별 High, Low, Close에 매도 하였을 경우의 수익률을 컬럼으로 추가하여, 
 # 최대 수익률 내는 손절 및 익절라인을 구해 df_BestLine에 저장
 
-df1 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-14.csv")
-df2 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-15.csv")
-df3 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-16.csv")
-df4 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-17.csv")
-df5 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-18.csv")
-df6 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-21.csv")
-df7 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-22.csv")
-df8 = pd.read_csv("C:/myData/TodayStatus/stat2020-12-23.csv")
+path_dir = 'C:/myData/TodayStatus'
+file_list = os.listdir(path_dir)
+dftmp = []
+for i in range(len(file_list)):
+    df = pd.read_csv("C:/myData/TodayStatus/{}".format(file_list[i]))
+    dftmp.append(df)
 
 # 분석결과(201220) : 일주일 데이터 분석 결과 최적의 손절라인: X / 익절라인: 2.2%
 # 분석결과(201222) : 손절라인:X / 익절라인: 1.3%
 
-dftmp = pd.concat([df1,df2,df3,df4,df5,df6,df7,df8])
-# print(dftmp)
+dftmp = pd.concat(dftmp)
+print(dftmp)
 dftmp['HIGH_RATE'] = (dftmp['HIGH']-dftmp['BUY'])/ dftmp['BUY'] * 100
 dftmp['LOW_RATE'] = (dftmp['LOW']-dftmp['BUY'])/ dftmp['BUY'] * 100
 dftmp['CLOSE_RATE'] = (dftmp['CLOSE']-dftmp['BUY'])/ dftmp['BUY'] * 100
