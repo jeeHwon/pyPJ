@@ -7,14 +7,14 @@ fontname = font_manager.FontProperties(fname='C://myData//Fonts///malgun.ttf').g
 rc('font',family=fontname)
 
 df = pd.read_csv('data/ebola.csv')
-# print(df)
+print(df)
 # df.info()
 
-# print(df.shape)
-# print('값의 갯수\n', df.count())
-# print('누락된 값의 갯수\n', df.shape[0]-df.count())
-# e1 = df.iloc[:10, :5]
-# print(e1)
+print(df.shape)
+print('값의 갯수\n', df.count())
+print('누락된 값의 갯수\n', df.shape[0]-df.count())
+e1 = df.iloc[:10, :5]
+print(e1)
 
 # 누락값 처리
 # print('지정값으로 변경\n', e1.fillna(0))
