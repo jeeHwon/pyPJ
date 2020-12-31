@@ -29,7 +29,8 @@ print(data2009)
 print('==================문제5==================')
 print('값의 갯수\n', data2009.count())
 print('누락된 값의 갯수\n', data2009.shape[0]-data2009.count())
-data2009 = data2009.fillna(0)
+data2009['Spirits'] = data2009['Spirits'].fillna(0)
+
 
 print('==================문제6==================')
 data2009['total'] = data2009['Beer'] + data2009['Wine'] + data2009['Spirits']
