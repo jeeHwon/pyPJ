@@ -1,0 +1,51 @@
+1. pip install django
+
+2. 프로젝트 생성
+django-admin startproject 프로젝트명
+django-admin startproject config
+
+3. 앱생성
+cd config
+python manage.py startapp 앱이름
+python manage.py startapp board
+장고에서의 MTV (==자바의 MVC)
+Model Template View (Model View Controller)
+    -Model -> models.py
+    -Template -> /templates (board/templates 폴더 생성)
+    -View -> views.py
+
+4. 앱등록(settings.py)
+INSTALLED_APPS 에 'board' 추가
+
+5. models.py (작성)
+class Board(models.Model):
+    title = models.CharField(max_length=50)
+    username = models.CharField(max_length=30)
+    pw = models.CharField(max_length=30)
+    regdate = models.DateTimeField(auto_now_add=True)
+    # id 컬럼이 자동 추가, 기본키, 자동증가
+
+6. 테이블 생성코드 작성(config에서)
+python manage.py makemigrations
+    -config->board->migrations->0001_initial.py 파일 생성확인
+
+7.테이블 생성
+python manage.py migrate
+    - 테이블 생성 확인 : 윈도우+r -cmd c: cd sqlite > sqlite3 c:\study\pj3_django\config\db.sqlite3
+    - .table : (select * from tab;)
+    - .schema board_board : (desc board_board;)
+    - .quit : 실행종료
+
+8.테이블 수정
+    - models.py 에서 max_length 수정
+
+9. 테이블 수정코드 작성
+python manage.py makemigrations
+
+10. 테이블 수정
+python manage.py migrate
+
+11. 테이블 삭제
+    - 테이블 수정코드 작성(models.py 주석처리) python manage.py makemigrations
+    - 테이블 수정 python manage.py migrate
+
