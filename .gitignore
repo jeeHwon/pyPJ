@@ -57,3 +57,12 @@ pj3_django/config/config/wsgi.py
 pj3_django/config/manage.py
 pj3_django/config/board/migrations/__init__.py
 pj3_django/config/board/admin.py
+pj3_django/config/config/__pycache__/wsgi.cpython-36.pyc
+pj3_django/config/polls/__init__.py
+pj3_django/config/polls/__pycache__/admin.cpython-36.pyc
+pj3_django/config/polls/__pycache__/models.cpython-36.pyc
+pj3_django/config/polls/__pycache__/__init__.cpython-36.pyc
+pj3_django/config/polls/migrations/0001_initial.py
+pj3_django/config/polls/migrations/__init__.py
+pj3_django/config/polls/migrations/__pycache__/__init__.cpython-36.pyc
+pj3_django/config/polls/migrations/__pycache__/0001_initial.cpython-36.pyc

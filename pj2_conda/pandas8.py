@@ -93,3 +93,16 @@ data = pd.read_csv('data/accidentdata.csv')
 # plt.title('2012-2014 경기도 교통사망사고 높은 지역')
 # plt.show()
 
+# import numpy as np 
+# df = tips.head(30)
+# print(df)
+# df['sex'] = "A"+df['sex']
+# buylist = df['sex'].values.tolist()
+
+# print(buylist)
+code1 = 123456
+code2 = 567861
+rows = []
+rows.append('A'+str(code1))
+rows.append('A'+str(code2))
+print(rows)
