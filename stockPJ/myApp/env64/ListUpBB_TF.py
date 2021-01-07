@@ -5,11 +5,11 @@ import pandas as pd
 import csv
 from datetime import datetime
 
-# ======================== ver 1.2 ========================
-# 업데이트 : 20.12.25
+# ======================== ver 1.3 ========================
+# 업데이트 : 21.01.07
 # 경로 수정: C:/myData/BuyList/BB_TF_buylist.csv 
-# %b : 0.85
-# MFI : 85
+# %b : 0.90
+# MFI : 90
 
 mk = Analyzer1.MarketDB()
 url = 'https://kind.krx.co.kr/corpgeneral/corpList.do?method=download&serachType=13'
@@ -46,7 +46,7 @@ for c in allCodes:
     df = df[19:]
 
     try:
-        if df.PB.values[len(df.close)-1] > 0.85 and df.MFI10.values[len(df.close)-1]>85:
+        if df.PB.values[len(df.close)-1] > 0.90 and df.MFI10.values[len(df.close)-1]>90:
             buyok = buyok + 1
             buylist.append("A"+c)
         else:
