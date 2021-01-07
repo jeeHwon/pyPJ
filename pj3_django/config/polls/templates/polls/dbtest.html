@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>dbtest.html</h2>
+    <!-- <hr> -->
+    <!-- <h3>{{qlist}}</h3>     변수의 값 출력시 -->
+    <hr>
+    {% if qlist %}
+    <ul>
+    {% for q in qlist %}
+        <li>{{q.id}} - {{q.question_text}}</li>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <p>자료없음</p>
+    {% endif %}
+
+</body>
+</html>

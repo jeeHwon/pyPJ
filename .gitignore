@@ -66,3 +66,13 @@ pj3_django/config/polls/migrations/0001_initial.py
 pj3_django/config/polls/migrations/__init__.py
 pj3_django/config/polls/migrations/__pycache__/__init__.cpython-36.pyc
 pj3_django/config/polls/migrations/__pycache__/0001_initial.cpython-36.pyc
+pj3_django/config/member/__init__.py
+pj3_django/config/member/__pycache__/__init__.cpython-36.pyc
+pj3_django/config/member/__pycache__/admin.cpython-36.pyc
+pj3_django/config/member/__pycache__/models.cpython-36.pyc
+pj3_django/config/member/migrations/__init__.py
+pj3_django/config/member/migrations/0001_initial.py
+pj3_django/config/member/migrations/__pycache__/__init__.cpython-36.pyc
+pj3_django/config/member/migrations/__pycache__/0001_initial.cpython-36.pyc
+pj3_django/config/polls/__pycache__/urls.cpython-36.pyc
+pj3_django/config/polls/__pycache__/views.cpython-36.pyc
