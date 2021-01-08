@@ -6,5 +6,8 @@ class Member(models.Model):
     email = models.CharField(max_length=50)
     hp = models.CharField(max_length=50)
     regdate = models.DateTimeField(auto_now_add=True)
-    def __str__(self):      # = 자바의 toString() 
-        return self.question_text
+    def __str__ (self):
+        return self.username+'-'+self.hp
+    class Meta:
+        db_table='member'
+

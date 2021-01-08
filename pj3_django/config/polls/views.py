@@ -13,11 +13,17 @@ def dbtest(request):    # 127.0.0.1:8000/polls/dbtest
     # q.save()
 
     # 2) 조회
-    qlist = Question.objects.all()      # 모든 데이터
+    # qlist = Question.objects.all()      # 모든 데이터
     # qlist = Question.objects.get(id=3)  # 조건에 맞는 데이터
     # print(qlist)
 
     # return render(request, 'polls/dbtest.html')   
     # return render(request, 'polls/dbtest.html', {'aa':'bb'})
+    # return render(request, 'polls/dbtest.html', {'qlist':qlist})
+
+    # 3) 삭제
+    # q= Question.objects.get(id=1)   # 해당데이터를 가져온 뒤
+    # q.delete()
+    qlist = Question.objects.all()
     return render(request, 'polls/dbtest.html', {'qlist':qlist})
 
