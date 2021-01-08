@@ -7,12 +7,9 @@ import time
 from urllib.request import urlopen
 import csv
 
-# ======================== ver 5.01 ========================
+# ======================== ver 5.02 ========================
 # 업데이트 내용 : 
-# 매일 매도하는 시스템 삭제
-# 장 시작 ~ 10분 집중매수
-# 장 중 익절 및 손절라인 돌파시 자동매도
-# 볼린저 밴드 TF와 RV 일원화
+# bought_list 계속 추가되는 현상 교체
 
 # target : 10
 # price percent : 0.098
@@ -117,6 +114,7 @@ def get_stock_balance(code):
         dbgout('평가금액: ' + str(cpBalance.GetHeaderValue(3)))
         dbgout('평가손익: ' + str(cpBalance.GetHeaderValue(4)))
         dbgout('종목수: ' + str(cpBalance.GetHeaderValue(7)))
+        bought_list = []
     stocks = []
     for i in range(cpBalance.GetHeaderValue(7)):
         stock_code = cpBalance.GetDataValue(12, i)  # 종목코드
