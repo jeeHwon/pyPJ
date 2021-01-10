@@ -9,12 +9,12 @@ import csv
 
 # ======================== ver 5.02 ========================
 # 업데이트 내용 : 
-# bought_list 계속 추가되는 현상 교체
+# overline : 20.8 -> 13.5
 
 # target : 10
 # price percent : 0.098
 # list = [ETF static]+ [BB]
-# overline : 20.8
+# overline : 13.5
 # underline: -20.0
 # target_buy_price = today_open + (lastday_high - lastday_low) * 0.4
 
@@ -240,7 +240,7 @@ def sell_etf():
     """수익률이 일정 퍼센트 이상 또는 이하 종목을 최유리 지정가 IOC 조건으로 매도한다."""
     try:
         global bought_list
-        overline = 20.8
+        overline = 13.5
         underline = -20.0
         cpTradeUtil.TradeInit()
         acc = cpTradeUtil.AccountNumber[0]          # 계좌번호

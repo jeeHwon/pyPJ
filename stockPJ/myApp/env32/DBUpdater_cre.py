@@ -61,7 +61,7 @@ def read_creon(code):
         return None
     return df
 
-def read_krx_code(self):
+def read_krx_code():
     """KRX로부터 상장법인목록 파일을 읽어와서 데이터프레임으로 반환"""
     url = 'https://kind.krx.co.kr/corpgeneral/corpList.do?method=download&serachType=13'
     krx = pd.read_html(url, header=0)[0]

@@ -86,6 +86,9 @@ class DBUpdater:
                 if doc is None:
                     return None
                 html = BeautifulSoup(doc, 'lxml')
+                print(html)
+                import time
+                time.sleep(1000)
                 pgrr = html.find('td', class_='pgRR')
                 if pgrr is None:
                     return None

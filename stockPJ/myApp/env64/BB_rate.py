@@ -15,7 +15,7 @@ krx = krx[['종목코드', '회사명']]
 krx = krx.rename(columns={'종목코드':'code', '회사명':'company'})
 krx.code = krx.code.map('{:06d}'.format)
 allCodes = krx.code.tolist()
-
+# allCodes = ['005930']
 
 def get_BB_list(date):
     buylist = []
@@ -29,6 +29,7 @@ def get_BB_list(date):
         df['TP'] = (df['high'] + df['low'] + df['close']) / 3
         df['PMF'] = 0
         df['NMF'] = 0
+
         for i in range(len(df.close)-1):
             if df.TP.values[i] < df.TP.values[i+1]:
                 df.PMF.values[i+1] = df.TP.values[i+1] * df.volume.values[i+1]
@@ -43,11 +44,14 @@ def get_BB_list(date):
         df = df[19:]
         df = df.dropna()
         df['s_date'] = df['date'].apply(lambda x:x.strftime('%Y-%m-%d'))
+
         try:
             if df[df['s_date']==date]['PB'].values[0] > 0.90 and df[df['s_date']==date]['MFI10'].values[0]>90:
                 buylist.append(c)
+                print(c)
             elif df[df['s_date']==date]['PB'].values[0] < 0.10 and df[df['s_date']==date]['IIP21'].values[0]>0:
                 buylist.append(c)
+                print(c)
         except:
             print("err")
     return buylist
@@ -88,7 +92,7 @@ def getRate(data, up_line):
 
 # ==main
 
-target_date = "2020-12-20"
+target_date = "2020-12-14"
 
 buylist = get_BB_list(target_date)
 print(buylist)

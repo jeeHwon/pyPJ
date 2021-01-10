@@ -368,7 +368,7 @@ if __name__ == '__main__':
         printlog('종목별 주문 금액 :', buy_amount)
         printlog('오늘 리스트업 된 종목수 :', len(symbol_list))
         printlog('시작 시간 :', datetime.now().strftime('%m/%d %H:%M:%S'))
-        # time.sleep(10)
+        time.sleep(10)
         soldout = False;
         
         while True:

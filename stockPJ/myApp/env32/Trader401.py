@@ -7,17 +7,18 @@ import time
 from urllib.request import urlopen
 import csv
 
-# ======================== ver 4.02 ========================
+# ======================== ver 4.03 ========================
 
 # 업데이트 내용 : 
-# 1) overline : 20.8
-# 2) underline: -20.0
-# 3) target_buy_price = today_open + (lastday_high - lastday_low) * 0.3
-# 4) 앞으로 업데이트 내용만 수정하고 파일 이름 바꾸지 않기로
+# list = [ETF static]+ [BB_TF] + [BB_RV] -> [ETF static]+ [ML_RNN]
+# [BB_TF] + [BB_RV] 리스트받아 순환신경망 이용 오늘 종가 대비 내일 종가 비율 높은 상위 30개 종목선정
 
 # target : 10
 # price percent : 0.098
 # list = [ETF static]+ [BB_TF] + [BB_RV]
+# overline : 20.8
+# underline: -20.0
+# target_buy_price = today_open + (lastday_high - lastday_low) * 0.3
 
 
 # 로그 메시지 출력
@@ -337,14 +338,7 @@ if __name__ == '__main__':
         symbol_list = ['A122630', 'A252670', 'A233740', 'A250780', 'A225130', 'A280940', 'A261220', 'A217770', 'A295000', 'A176950']
 
         # 볼린저밴드 추세추종 해당 종목 추가 
-        with open('C:/myData/BuyList/BB_TF_buylist.csv', 'r', encoding='utf-8') as f:
-            rdr = csv.reader(f) 
-            for i,line in enumerate(rdr): 
-                if i==0: 
-                    symbol_list.extend(line)
-
-        # 볼린저밴드 반전매매 해당 종목 추가 
-        with open('C:/myData/BuyList/BB_RV_buylist.csv', 'r', encoding='utf-8') as f:
+        with open('C:/myData/BuyList/ML_buylist.csv', 'r', encoding='utf-8') as f:
             rdr = csv.reader(f) 
             for i,line in enumerate(rdr): 
                 if i==0: 
