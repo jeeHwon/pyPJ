@@ -7,14 +7,14 @@ import time
 from urllib.request import urlopen
 import csv
 
-# ======================== ver 5.02 ========================
+# ======================== ver 5.03 ========================
 # 업데이트 내용 : 
-# overline : 20.8 -> 13.5
+# overline : 13.5 -> 19.8
 
 # target : 10
 # price percent : 0.098
 # list = [ETF static]+ [BB]
-# overline : 13.5
+# overline : 19.8
 # underline: -20.0
 # target_buy_price = today_open + (lastday_high - lastday_low) * 0.4
 
@@ -188,6 +188,7 @@ def buy_etf(code):
     """인자로 받은 종목을 최유리 지정가 FOK 조건으로 매수한다."""
     try:
         global bought_list      # 함수 내에서 값 변경을 하기 위해 global로 지정
+        global target_buy_count
         if code in bought_list: # 매수 완료 종목이면 더 이상 안 사도록 함수 종료
             printlog('code:', code, 'in', bought_list) 
             return False
@@ -232,6 +233,7 @@ def buy_etf(code):
             printlog('get_stock_balance :', stock_name, stock_qty)
             if bought_qty > 0:
                 bought_list.append(code)
+                target_buy_count = 10 - len(bought_list)
                 dbgout("'buy_stock("+ str(stock_name) + " : "+str(code)+") -> "+str(bought_qty)+ "EA bought!"+"'")
     except Exception as ex:
         dbgout("'buy_stock(" + str(code)+ ") -> exception!" + str(ex) +"'")
@@ -240,7 +242,8 @@ def sell_etf():
     """수익률이 일정 퍼센트 이상 또는 이하 종목을 최유리 지정가 IOC 조건으로 매도한다."""
     try:
         global bought_list
-        overline = 13.5
+        global target_buy_count
+        overline = 19.8
         underline = -20.0
         cpTradeUtil.TradeInit()
         acc = cpTradeUtil.AccountNumber[0]          # 계좌번호
@@ -273,6 +276,7 @@ def sell_etf():
                 printlog('최유리 IOC 매도', stock_code, stock_name, stock_qty, '-> cpOrder.BlockRequest() ->returned', ret)
                 dbgout("'sell_etf("+ str(stock_name) + " : "+str(stock_code)+") -> "+str(stock_qty)+ "EA sold!"+"'")
                 bought_list.remove(stock_code)
+                target_buy_count = 10 - len(bought_list)
                 time.sleep(1)
                 if ret == 4:
                     remain_time = cpStatus.LimitRequestRemainTime
@@ -327,12 +331,12 @@ if __name__ == '__main__':
                 soldout = True
             if t_start < t_now < t_buyonly :  # AM 09:05 ~ AM 09:20 : 집중매수
                 for sym in symbol_list:
-                    if len(bought_list) < target_buy_count:
+                    if 0 < target_buy_count:
                         buy_etf(sym)
                         time.sleep(1)
             if t_buyonly < t_now < t_sell :  # AM 09:20 ~ PM 03:15 : 매수 및 매도
                 for sym in symbol_list:
-                    if len(bought_list) < target_buy_count:
+                    if 0 < target_buy_count:
                         buy_etf(sym)
                         time.sleep(1)
                 sell_etf()
