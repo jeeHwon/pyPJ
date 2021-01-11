@@ -80,3 +80,5 @@ pj3_django/config/member/migrations/0002_delete_member.py
 pj3_django/config/member/migrations/0003_member.py
 pj3_django/config/member/migrations/__pycache__/0002_delete_member.cpython-36.pyc
 pj3_django/config/member/migrations/__pycache__/0003_member.cpython-36.pyc
+pj3_django/config/member/__pycache__/urls.cpython-36.pyc
+pj3_django/config/member/__pycache__/views.cpython-36.pyc
