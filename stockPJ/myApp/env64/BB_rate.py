@@ -92,13 +92,13 @@ def getRate(data, up_line):
 
 # ==main
 
-target_date = "2020-12-14"
+target_date = "2020-12-21"
 
 buylist = get_BB_list(target_date)
 print(buylist)
 
 # target date로 부터 10일치의 데이터
-data = get10dayDf(buylist, target_date, 0.3)
+data = get10dayDf(buylist, target_date, 0.4)
 print(data)
 
 xlist = np.arange(0.1, 35.0, 0.1)
@@ -108,15 +108,14 @@ for i in range(0,len(xlist)):
     rows.append([xlist[i], getRate(data, xlist[i])])
 
 fin = pd.DataFrame(rows, columns=columns)
-print(fin)
 plt.scatter(fin['up_line'], fin['suik'])
 plt.show()
 fin = fin.round(2)
-fin.to_csv("C:/myData/02.csv", index = False)
+fin = fin.sort_values('suik', ascending=False)
+print(fin.head(10))
 
 
-df = pd.read_csv("C:/myData/02.csv", error_bad_lines=False)
-print(df.info())
-print(df.sort_values('suik'))
+fin.to_csv("C:/myData/BB_rate_stat/{}.csv".format(target_date), index = False)
+print(fin.head(10))
 
 
