@@ -334,10 +334,16 @@ if __name__ == '__main__':
                     if 0 < target_buy_count:
                         buy_etf(sym)
                         time.sleep(1)
+                    elif 0 == target_buy_count:
+                        sell_etf()
+                        time.sleep(1)
             if t_buyonly < t_now < t_sell :  # AM 09:20 ~ PM 03:15 : 매수 및 매도
                 for sym in symbol_list:
                     if 0 < target_buy_count:
                         buy_etf(sym)
+                        time.sleep(1)
+                    elif 0 == target_buy_count:
+                        sell_etf()
                         time.sleep(1)
                 sell_etf()
                 time.sleep(1)
