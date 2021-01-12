@@ -1,8 +1,15 @@
 from django.shortcuts import render
 from .models import Question
+from django.shortcuts import get_object_or_404
+
+def detail(request, qid):
+    # q = Question.objects.get(id=qid)       # select * from question where id=qid
+    q = get_object_or_404(Question, id=qid)  # err 발생시 404 페이지 출력
+    return render(request,'polls/detail.html',{'q':q})
 
 def index(request):
-    return render(request, 'polls/index.html')    # 요청, 반환할 페이지
+    qlist = Question.objects.all()
+    return render(request, 'polls/index.html', {'qlist':qlist})    # 요청, 반환할 페이지
 
 def dbtest(request):    # 127.0.0.1:8000/polls/dbtest
     # -> id 값 없는경우 : 삽입

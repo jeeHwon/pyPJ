@@ -4,8 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="/static/spring.css"/>
 </head>
 <body>
     <h1>index.html</h1>
+    <hr>
+    {%if qlist%}
+    <ul>
+        {%for q in qlist%}
+        <!--http://127.0.0.1:8000/polls/2-->
+            <li><a href="/polls/{{q.id}}">{{q.id}} - {{q.question_text}}</a></li>
+        {%endfor%}
+    </ul>
+    {%else%}
+        <p>자료없음</p>
+    {%endif%}
 </body>
 </html>

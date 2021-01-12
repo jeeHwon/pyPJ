@@ -31,6 +31,7 @@ class Board(models.Model):
 6. 테이블 생성코드 작성(config에서)
 python manage.py makemigrations
     -config->board->migrations->0001_initial.py 파일 생성확인
+    - 만약 생성된 테이블 한해서만 적용시키려면  python manage.py makemigrations board -> python manage.py migrate board
 
 7.테이블 생성
 python manage.py migrate
@@ -61,6 +62,7 @@ python manage.py migrate
     http://127.0.0.1:8000/polls/insert     -> insert.html
     polls에도 urls.py 복사 붙여넣기 후 수정
 
+
     
 
 
@@ -83,12 +85,13 @@ python manage.py createsuperuser
 
 == 데이터베이스 연동 views.dbtest
 
-# 과제
-1 member 앱 생성
-2 member 테이블 생성
-username varchar(50)
-pw varchar(50)
-email varchar(50)
-hp varchar(50)
-regdate datetime
-3 .schema member_member 의 실행결과를 캡쳐
+
+== static 파일관리 :css js 코드 등
+--settings.py
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS=[os.path.join(BASE_DIR, 'static')]
+--설문관리
+    http://127.0.0.1:8000/polls/2   --polls/detail.html
+
+
+== 과제

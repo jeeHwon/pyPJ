@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/spring.css"/>
+</head>
+<body>
+    <h1>detail.html</h1>
+    <hr>
+    <h3>{{q.question_text}}--{{q.pup_date}}</h3>
+    <!--Question 과 Choice 는 1:N관계, 외래키로 연결된 경우 모델소문자_set속성이 제공됨-->
+    <!--즉, q.choice_set.all() 단 템플릿 문법상 () 생략-->
+    {%for c in q.choice_set.all%}
+        {{c.choice_text}}
+    {%endfor%}
+</body>
+</html>

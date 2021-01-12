@@ -9,12 +9,14 @@ def insert(request):
         username = request.POST['username']
         pw = request.POST['pw']
         pw1 = request.POST['pw1']
-        msg = {}
-        if pw != pw1:
+        email = request.POST['email']
+        hp = request.POST['hp']
+        msg = {}                                # html에 가져갈 dictionary
+        if not (username and pw and pw1 and hp):
+            msg['err'] = '필수 입력 값을 채우시오'
+        elif pw != pw1:
             msg['err'] = '비밀번호를 확인하세요'
         else :
-            email = request.POST['email']
-            hp = request.POST['hp']
             m = Member(
                 username = username,
                 pw = make_password(pw),         # 패스워드 암호화 하여 저장
