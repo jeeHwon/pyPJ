@@ -7,9 +7,9 @@ import time
 from urllib.request import urlopen
 import csv
 
-# ======================== ver 5.03 ========================
+# ======================== ver 5.04 ========================
 # 업데이트 내용 : 
-# overline : 13.5 -> 19.8
+# AM 09:05 ~ (AM 09:20 ->)AM 09:10 : 집중매수
 
 # target : 10
 # price percent : 0.098
@@ -320,7 +320,7 @@ if __name__ == '__main__':
             t_now = datetime.now()
             t_9 = t_now.replace(hour=9, minute=0, second=0, microsecond=0)
             t_start = t_now.replace(hour=9, minute=5, second=0, microsecond=0)
-            t_buyonly = t_now.replace(hour=9, minute=20, second=0, microsecond=0)
+            t_buyonly = t_now.replace(hour=9, minute=10, second=0, microsecond=0)
             t_sell = t_now.replace(hour=15, minute=15, second=0, microsecond=0)
             t_exit = t_now.replace(hour=15, minute=20, second=0,microsecond=0)
             today = datetime.today().weekday()
@@ -329,7 +329,7 @@ if __name__ == '__main__':
                 sys.exit(0)
             if t_9 < t_now < t_start and soldout == False:
                 soldout = True
-            if t_start < t_now < t_buyonly :  # AM 09:05 ~ AM 09:20 : 집중매수
+            if t_start < t_now < t_buyonly :  # AM 09:05 ~ AM 09:10 : 집중매수
                 for sym in symbol_list:
                     if 0 < target_buy_count:
                         buy_etf(sym)
@@ -337,7 +337,7 @@ if __name__ == '__main__':
                     elif 0 == target_buy_count:
                         sell_etf()
                         time.sleep(1)
-            if t_buyonly < t_now < t_sell :  # AM 09:20 ~ PM 03:15 : 매수 및 매도
+            if t_buyonly < t_now < t_sell :  # AM 09:10 ~ PM 03:15 : 매수 및 매도
                 for sym in symbol_list:
                     if 0 < target_buy_count:
                         buy_etf(sym)
