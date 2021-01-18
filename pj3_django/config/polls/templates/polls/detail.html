@@ -12,8 +12,16 @@
     <h3>{{q.question_text}}--{{q.pup_date}}</h3>
     <!--Question 과 Choice 는 1:N관계, 외래키로 연결된 경우 모델소문자_set속성이 제공됨-->
     <!--즉, q.choice_set.all() 단 템플릿 문법상 () 생략-->
-    {%for c in q.choice_set.all%}
-        {{c.choice_text}}
-    {%endfor%}
+    {% if err %}
+    <h3>{{err}}</h3>
+    {% else %}
+    <form method="post" action="{%url 'polls:vote1' q.id%}">
+        {%csrf_token%}
+        {%for c in q.choice_set.all%}
+            <input type="radio" name="choice" value="{{c.id}}">{{c.choice_text}}<br>
+        {%endfor%}
+        <input type="submit" value="투표하기">
+    </form>
+    {% endif %}
 </body>
 </html>

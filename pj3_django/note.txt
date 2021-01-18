@@ -90,8 +90,17 @@ python manage.py createsuperuser
 --settings.py
     STATIC_URL = '/static/'
     STATICFILES_DIRS=[os.path.join(BASE_DIR, 'static')]
---설문관리
-    http://127.0.0.1:8000/polls/2   --polls/detail.html
+--설문관fus
+    http://127.0.0.1:8000/polls/2   --> polls/detail.html
 
 
-== 과제
+== 투표하기
+result.html http://127.0.0.1:8000/polls/vote/3   --> polls/result.html
+config/urls.py
+polls/urls.py
+--이름공간(namespace):url 패턴의 이름이 충돌나는 것을 방지하기 위함
+app_name = 'polls'
+
+polls/view.py
+detail.html
+
