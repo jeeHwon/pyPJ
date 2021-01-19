@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>books/book_list.html</h1>
+    <hr>
+    <ul>
+    {% for b in object_list%}
+        <li>{{b.title}} - {{b.publisher}}</li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

@@ -90,7 +90,7 @@ python manage.py createsuperuser
 --settings.py
     STATIC_URL = '/static/'
     STATICFILES_DIRS=[os.path.join(BASE_DIR, 'static')]
---설문관fus
+--설문관련
     http://127.0.0.1:8000/polls/2   --> polls/detail.html
 
 
@@ -104,3 +104,43 @@ app_name = 'polls'
 polls/view.py
 detail.html
 
+
+=== 새로운 프로젝트 생성
+2)프로젝트 생성
+django-admin startproject config2
+
+3)앱생성
+cd config2
+python manage.py startapp books
+--templates 생성
+--setting.py
+--pip install mysqlclient
+python manage.py migrate    # 기본 테이블 생성
+
+--기본 테이블 생성  
+python manage.py migrate 
+
+--model.py 작성 후 테이블 생성
+python manage.py makemigrations books
+python manage.py migrate books
+
+--서버실행
+python manage.py runserver
+
+--관리자 생성
+python manage.py createsuperuser
+
+--뷰의 종류(FBV:Function-Based View, CBV:Class-Based View)
+    FBV: 사용자가 모든 기능을 정의한 후 해당내용을 웹페이지에 표현
+    CBV: 웹개발시 공통으로 사용할 수 있는 로직을 미리 개발해 놓고 제공하는 뷰
+
+--config2/urls.py에 book 추가
+--books/urls.py에  메소드 추가
+--views.py
+
+
+ListView 속성 object_list 
+    http://127.0.0.1:8000/books/book
+    http://127.0.0.1:8000/books/publisher
+DataView 속성 object
+    http://127.0.0.1:8000/books/publisher/1

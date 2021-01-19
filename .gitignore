@@ -102,3 +102,5 @@ pj3_django/config2/config2/__pycache__/wsgi.cpython-36.pyc
 pj3_django/config2/books/admin.py
 pj3_django/config2/config2/asgi.py
 pj3_django/config2/books/tests.py
+pj3_django/config2/books/__pycache__/urls.cpython-36.pyc
+pj3_django/config2/books/__pycache__/views.cpython-36.pyc
