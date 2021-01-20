@@ -6,14 +6,13 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>books/book_list.html</h1>
+    <h1>books/index.html</h1>
     <hr>
     <ul>
-    {% for b in object_list%}
-        <li>{{b.title}} - {{b.publisher}}</li>
-    {% endfor %}
+        {% for m in mlist %}
+        <li><a href="/books/{{m}}">{{m}}</a></li>
+        {% endfor %}
+
     </ul>
-    <hr>
-    <a href="{% url 'books:index' %}">홈으로</a>
 </body>
 </html>

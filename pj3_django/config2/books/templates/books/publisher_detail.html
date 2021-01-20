@@ -7,5 +7,12 @@
 </head>
 <body>
     <h1>books/publisher_detail.html</h1>
+    <hr>
+    <p>출판사명 : {{object.name}}</p>
+    <p>위치 : {{object.addr}}</p>
+    <p>홈페이지 : {{object.website}}</p>
+    <hr>
+    <!-- <a href="/books/publisher">출판사 목록</a> -->
+    <a href="{% url 'books:publisherlist' %}">출판사 목록</a>
 </body>
 </html>

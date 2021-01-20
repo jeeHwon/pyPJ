@@ -136,11 +136,16 @@ python manage.py createsuperuser
 
 --config2/urls.py에 book 추가
 --books/urls.py에  메소드 추가
+
+
 --views.py
-
-
 ListView 속성 object_list 
     http://127.0.0.1:8000/books/book
     http://127.0.0.1:8000/books/publisher
 DataView 속성 object
     http://127.0.0.1:8000/books/publisher/1
+TemplateView : 특별한 로직없이 템플릿 파일만 렌더링
+    http://127.0.0.1:8000/books/book
+CreateView
+DeleteView
+

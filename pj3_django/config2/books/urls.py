@@ -3,12 +3,21 @@ from . import views
 
 app_name = 'books'
 urlpatterns = [
+    # http://127.0.0.1:8000/books/->
+    path('', views.BooksIndexView.as_view(), name='index'), 
+
     # http://127.0.0.1:8000/books/book ->
     path('book/', views.BookList.as_view(), name='booklist'),   
+
     # http://127.0.0.1:8000/books/publisher ->
-    path('publisher/', views.PublisherList.as_view(), name='publisherlist'),   
+    path('publisher/', views.PublisherList.as_view(), name='publisherlist'), 
+
     # http://127.0.0.1:8000/books/publisher/1 ->
     path('publisher/<int:pk>/', views.PublisherDetail.as_view(), name='publisherdetail'),   
+
+    # http://127.0.0.1:8000/books/publisher/insert->
+    path('publisher/insert/', views.PublisherCreate.as_view(), name='publisherinsert'),
+
 
 ]
 

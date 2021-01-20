@@ -13,6 +13,9 @@
             <li><a href="{%url 'books:publisherdetail' p.id %}">{{p.name}}</a> - {{p.addr}}</li>
         {% endfor %}
     </ul>
+    <hr>
+    <a href="{% url 'books:index' %}">홈으로</a>
+    <a href="{% url 'books:publisherinsert' %}">출판사 등록</a>
     
 </body>
 </html>
