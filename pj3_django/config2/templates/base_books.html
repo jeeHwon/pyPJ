@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}12번가 - 도서 {% endblock %}
+{% block menu %}
+{{ block.super }}
+<!-- 부모 base.html의 정의내용 재사용 -->
+<ul>
+    <li><a href="/books/">도서홈</a></li>
+</ul>
+{% endblock %}

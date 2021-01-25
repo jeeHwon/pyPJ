@@ -104,3 +104,7 @@ pj3_django/config2/config2/asgi.py
 pj3_django/config2/books/tests.py
 pj3_django/config2/books/__pycache__/urls.cpython-36.pyc
 pj3_django/config2/books/__pycache__/views.cpython-36.pyc
+pj3_django/config2/books/migrations/0002_publisher_photo.py
+pj3_django/config2/books/migrations/__pycache__/0002_publisher_photo.cpython-36.pyc
+pj3_django/config2/img/photos/2021/icon_cate_f.png
+pj3_django/config2/img/photos/2021/poster_x_03.jpg

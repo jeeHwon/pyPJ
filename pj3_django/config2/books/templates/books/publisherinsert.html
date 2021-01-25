@@ -1,16 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'base_books.html' %}
+{% block content %}
     <h1>books/publisherinsert.html</h1>
     <hr>
     <!-- {{form.as_p}} -->
     <!-- {{form.as_ul}} -->
-    <form id="frm1" method="POST" action="">
+    <form id="frm1" method="POST" enctype="multipart/form-data">
         {%csrf_token%}
         <table border="1">
         {{form.as_table}}
@@ -19,5 +13,4 @@
         </tr>
         </table>
     </form>
-</body>
-</html>
+{% endblock %}

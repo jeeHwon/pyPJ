@@ -149,3 +149,28 @@ TemplateView : 특별한 로직없이 템플릿 파일만 렌더링
 CreateView
 DeleteView
 
+--템플릿
+{{ 변수 }}
+{% csrf-token %}
+{% comment 주석내용 %} {% end comment %}
+--기준 레이아웃 작성
+프로젝트 루트 templates 폴더 생성
+templates/base.html 파일 생성 --블럭을 기준으로 동작
+config2/templates/settings.py에 templates 추가
+books/publisher_list.html 에서 base.html 상속받아
+--css 파일 작성
+프로젝트 루트 static 폴더 생성
+static/base.css 작성
+config2/settings.py STATICFLIES_DIRS에  static 추가
+--수정 삭제
+books/urls.py
+
+--이미지 컬럼 추가
+books/models.py에서 publisher에 컬럼 추가
+python manage.py makemigrations books
+python manage.py migrate books
+
+--이미지 경로 설정
+프로젝트 루트 img 폴더 생성
+config2/settings.py MEDIA_URL 추가
+

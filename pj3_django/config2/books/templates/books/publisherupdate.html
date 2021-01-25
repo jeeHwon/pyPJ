@@ -1,0 +1,14 @@
+{% extends 'base_books.html' %}
+{% block content %}
+    <h1>books/publisherupdate.html</h1>
+    <hr>
+    <table>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_table }}
+        <tr>
+            <td colspan="2"><input type="submit" value="수정하기"></td>
+        </tr>
+        </table>
+    </form>
+{% endblock %}

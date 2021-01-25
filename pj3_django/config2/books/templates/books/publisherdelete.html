@@ -1,0 +1,12 @@
+{% extends 'base_books.html' %}
+{% block content %}
+    <h1>books/publisherdelete.html</h1>
+    <hr>
+    <p>출판사명: {{ object.name }}</p>
+    <p>주 소: {{ object.addr }}</p>
+    <p>홈페이지: {{ object.website }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="삭제하기">
+    </form>
+{% endblock %}

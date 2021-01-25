@@ -4,6 +4,7 @@ class Publisher(models.Model):
     name = models.CharField(max_length=50)
     addr = models.CharField(max_length=100)
     website = models.CharField(max_length=50)
+    photo = models.ImageField(upload_to='photos/%Y', default='photos/no.png')
     def __str__(self):
         return self.name
 

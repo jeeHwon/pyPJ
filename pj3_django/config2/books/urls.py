@@ -18,6 +18,12 @@ urlpatterns = [
     # http://127.0.0.1:8000/books/publisher/insert->
     path('publisher/insert/', views.PublisherCreate.as_view(), name='publisherinsert'),
 
+    # http://127.0.0.1:8000/books/publisher/update/2->
+    path('publisher/update/<int:pk>/', views.PublisherUpdate.as_view(), name='publisherupdate'),
+
+    # http://127.0.0.1:8000/books/publisher/delete/2->
+    path('publisher/delete/<int:pk>/', views.PublisherDelete.as_view(), name='publisherdelete'),
+
 
 ]
 

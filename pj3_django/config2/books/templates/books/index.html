@@ -1,18 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>books/index.html</h1>
-    <hr>
-    <ul>
-        {% for m in mlist %}
-        <li><a href="/books/{{m}}">{{m}}</a></li>
-        {% endfor %}
+{% extends 'base_books.html' %}
+{% block content %}
 
-    </ul>
-</body>
-</html>
+<h1>books/index.html</h1>
+<hr>
+<ul>
+    {% for m in mlist %}
+    <li><a href="/books/{{m}}">{{m}}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

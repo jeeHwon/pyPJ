@@ -1,18 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+{% extends 'base_books.html' %}
+{% block content %}
     <h1>books/publisher_detail.html</h1>
     <hr>
     <p>출판사명 : {{object.name}}</p>
     <p>위치 : {{object.addr}}</p>
     <p>홈페이지 : {{object.website}}</p>
+    <p>전경사진 : <img src="{{object.photo.url}}">{{object.photo.url}}</p> <!-- 이미지 주소 출력 -->
     <hr>
     <!-- <a href="/books/publisher">출판사 목록</a> -->
     <a href="{% url 'books:publisherlist' %}">출판사 목록</a>
-</body>
-</html>
+    <a href="{% url 'books:publisherupdate' pk=object.id%}">수정하기</a>
+    <a href="{% url 'books:publisherdelete' pk=object.id%}">삭제하기</a>
+{% endblock %}
