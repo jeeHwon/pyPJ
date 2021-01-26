@@ -172,5 +172,18 @@ python manage.py migrate books
 
 --이미지 경로 설정
 프로젝트 루트 img 폴더 생성
-config2/settings.py MEDIA_URL 추가
+config2/settings.py MEDIA_URL 및 MEDIA_ROOT 추가
+config2/urls.py에 
+    urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+--publisherupdate.html
+    <form method="post" id="frm1" method="POST" enctype="multipart/form-data">
+
+
+--홈뷰 설정
+config2/views.py
+    class HomeView(TemplateView):
+    template_name = 'home.html'
+config2/urls.py
+    path('', views.HomeView.as_view(), name='home')
+
 
