@@ -152,6 +152,18 @@ data$avg <- (data$cty+data$hwy)/2
 # 3) 평균연비가 높은 데이터 3개 출력
 head(data %>% arrange(desc(avg)), 3)  
 
+# 과제ver2 - 제조사별 suv 차량의 도시,고속도로 연비의 평균을 구해 1~5위출력력
+library(ggplot2)
+library(dplyr)
+data <- mpg
+str(data)
+data %>% filter(class=='suv') %>% 
+  group_by(manufacturer) %>% 
+  mutate(hap=(cty+hwy)/2) %>% 
+  summarise(avg=mean(hap)) %>%
+  arrange(desc(avg)) %>% 
+  head(5)
+  
 
 
 
