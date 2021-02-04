@@ -71,20 +71,21 @@ rc('font',family=fontname)
 
 df = pd.read_csv('data/ebola.csv')
 # df = df.head()
-# df['Date'] = pd.to_datetime(df['Date'])
-# df = df.set_index('Date')
-# df = df.reindex(pd.date_range(start='2014-3-21', end='2015-1-5'))
-# print(df)
+df['Date'] = pd.to_datetime(df['Date'])
+df = df.set_index('Date')
+print(df)
+df = df.reindex()
+print(df)
 # plt.plot(df)
 # plt.show()
 
-df['Date'] = pd.to_datetime(df['Date'])
-ebola = df.set_index('Date')
-print(ebola.iloc[:,:5])
-ebola = ebola.reindex(pd.date_range(start='2014-3-22',
-                    end='2015-1-5'))
-print(ebola.iloc[:5,:5])
-print(pd.date_range(start='2021-1-1',
-                    end='2021-12-31', freq='W'))
-print(pd.date_range(start='2021-1-1',
-                    end='2021-12-31', freq='B'))
+# df['Date'] = pd.to_datetime(df['Date'])
+# ebola = df.set_index('Date')
+# print(ebola.iloc[:,:5])
+# ebola = ebola.reindex(pd.date_range(start='2014-3-22',
+#                     end='2015-1-5'))
+# print(ebola.iloc[:5,:5])
+# print(pd.date_range(start='2021-1-1',
+#                     end='2021-12-31', freq='W'))
+# print(pd.date_range(start='2021-1-1',
+#                     end='2021-12-31', freq='B'))

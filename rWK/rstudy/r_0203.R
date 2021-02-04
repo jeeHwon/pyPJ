@@ -86,7 +86,7 @@ cor(data$father, data$son)
 cor.test(data$father, data$son) # p-value 가 매우 작으므로 상관계수 의미있다
 
 test <- c(1,2,3,4,5,6,7,8,9,10)
-test2 <- test * 2
+test2 <- c(1,2,3,4,5,6,7,8,9,9)
 test2
 plot(test, test2)
 cor.test(test, test2)
