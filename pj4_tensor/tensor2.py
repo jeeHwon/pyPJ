@@ -145,18 +145,45 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # 과제) iris1.csv 데이터를 읽어 다음을 진행하시오
 # 1) 앞쪽 4개의 모든 열은 xdata, 3개의 열은 ydata에 넣으시오
-iris = np.loadtxt('data/iris1.csv', delimiter=',', skiprows=1, dtype=np.dtype)
-xdata = np.array(iris[:,0:4])
-ydata = np.array(iris[:,4:7])
+# iris = np.loadtxt('data/iris1.csv', delimiter=',', skiprows=1, dtype=np.dtype)
+# xdata = np.array(iris[:,0:4])
+# ydata = np.array(iris[:,4:7])
 # print(iris)
 # print(xdata)
 # print(ydata)
 
 # 2) 실행 시에 x에 xdata, y에 ydata 값을 넣어서 원래의 값으로 복원하여 출력하시오
-x = tf.placeholder(tf.float32, [150,4])
-y = tf.placeholder(tf.float32, [150,3])
-argmax_xy = tf.argmax(y,1)
+# x = tf.placeholder(tf.float32, [150,4])
+# y = tf.placeholder(tf.float32, [150,3])
+# argmax_xy = tf.argmax(y,1)
+# with tf.Session() as sess:
+#     sess.run(x, feed_dict={x:xdata})
+#     print(sess.run(argmax_xy, feed_dict={y:ydata}))
+
+# 과제 풀이
+# data = np.loadtxt('data/iris1.csv', skiprows=1, delimiter=',')
+# print(data)
+# print(data.shape)
+# xdata = data[:,:4]
+# ydata = data[:,4:]
+# print(xdata)
+# print(ydata)
+# x = tf.placeholder(tf.float32, [150,4])
+# y = tf.placeholder(tf.float32, [150,3])
+# op1 = tf.argmax(y,1)
+# with tf.Session() as sess:
+#     print(sess.run(op1, feed_dict={y: ydata}))
+
+data = np.loadtxt('data/iris2.csv', skiprows=1, delimiter=',')
+xdata = data[:,:4]
+ydata = data[:,4:]
+print(ydata)
+# y = tf.placeholder(tf.int32, [150,1])   # 2차원
+y = tf.placeholder(tf.int32, [None,1])   # 2차원
+onehot = tf.one_hot(y,3)                # 3차원
+onehot2 = tf.reshape(onehot, [-1,3])    # 2차원
 with tf.Session() as sess:
-    sess.run(x, feed_dict={x:xdata})
-    print(sess.run(argmax_xy, feed_dict={y:ydata}))
+    # print(sess.run(onehot, feed_dict={y:ydata}))
+    # print(sess.run(onehot2, feed_dict={y:ydata}))
+    print(sess.run(onehot2, feed_dict={y:[[0],[2]]}))
 
