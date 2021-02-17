@@ -7,12 +7,12 @@ import numpy as np
 # (전월)총 정수기 대여개수, 10년이상 노후 정수기 대수, AS 시간
 # 다음달 AS 시간을 예측하고 이에대한 신규인력을 채용하고자 할 때.
 
-# data = np.loadtxt('data/water.csv', delimiter=',',skiprows=1) 
-# # print(data)
-# xdata = data[:,1:-1]
-# ydata = data[:,-1:]
-# # print(xdata)
-# # print(ydata)
+data = np.loadtxt('data/water.csv', delimiter=',',skiprows=1) 
+# print(data)
+xdata = data[:,1:-1]
+ydata = data[:,-1:]
+print(xdata.shape)
+print(ydata.shape)
 
 # x = tf.placeholder(tf.float32, [None,2])
 # y = tf.placeholder(tf.float32, [None,1])
