@@ -1,0 +1,322 @@
+<Oracle> 200928
+
+== eXERD 
+식별관계 : 공통컬럼 두개다 기본키인 경우
+비식별관계 : 공통컬럼 중 하나는 기본키, 나머지는 일반컬럼인 경우
+ojdbc6.jar
+
+
+==프로파일 
+conn system/1q2w3e4r!
+select * from dba_profiles;
+
+
+--프로파일 생성
+create profile 프로파일명 limit
+	내용들;
+
+create profile pro1 limit
+	SESSIONS_PER_USER 3 ->(동시접속 최대 3명)
+	IDLE_TIME 10 -> (휴면시간 : 10분간 활동없으면 종료)
+	CONNECT_TIME 10 -> (연결 최대 시간)
+	FAILED_LOGIN_ATTEMPTS 3 ->(패스워드 실패 3번하면 잠김)
+	PASSWORD_LIFE_TIME 5; ->(패스워드 만료일)
+
+select * from dba_profiles
+	where profile in 'PRO1';
+	
+
+--프로파일 사용자 적용	
+desc dba_users;
+select USERNAME, DEFAULT_TABLESPACE, PROFILE from dba_users;
+
+alter user tom
+	profile pro1;
+
+select USERNAME, DEFAULT_TABLESPACE, PROFILE from dba_users;
+
+--tom 비번 3번 실패해서 락 걸리기 / 이후 락 풀기
+conn system/1q2w3e4r!
+alter user tom
+	account unlock;
+conn tom/jerry
+
+--tom으로 최대 3명까지 동시접속
+--프로파일 리소스타입
+select * from dba_profiles
+	where profile in 'PRO1';
+	
+KERNEL : 오라클 삭제 후 실행(커널의 지원은 파라미터 값을 변경해야 적용됨
+PASSWORD : 즉시 실행
+
+alter system set resource_limit=true;
+
+sqlplus tom/jerry
+sqlplus tom/jerry
+sqlplus tom/jerry
+sqlplus tom/jerry -> 이제는 4명부터 동시접속 불가
+
+--프로파일 수정
+conn system/1q2w3e4r!
+
+alter profile pro1 limit
+	IDLE_TIME 5
+	FAILED_LOGIN_ATTEMPTS 5;
+
+select * from dba_profiles
+	where profile in 'PRO1';
+	
+--PASSWORD_VERIFY_FUNCTION
+--utlpwdmg.* 
+--최상위 권한 가진 사용자로 접속
+conn / as sysdba
+
+--utlpwdmg.* 에서 따와서 새로운 함수 f1만들기
+CREATE OR REPLACE FUNCTION f1
+(username varchar2,
+  password varchar2,
+  old_password varchar2)
+  RETURN boolean IS 
+   n boolean;
+   m integer;
+   differ integer;
+   isdigit boolean;
+   ischar  boolean;
+   ispunct boolean;
+   digitarray varchar2(20);
+   punctarray varchar2(25);
+   chararray varchar2(52);
+
+BEGIN 
+   digitarray:= '0123456789';
+   chararray:= 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+   punctarray:='!"#$%&()``*+,-/:;<=>?_';
+
+   -- Check if the password is same as the username
+   IF NLS_LOWER(password) = NLS_LOWER(username) THEN
+     raise_application_error(-20001, 'Password same as or similar to user');
+   END IF;
+
+   -- Check for the minimum length of the password
+   IF length(password) < 4 THEN
+      raise_application_error(-20002, 'Password length less than 4');
+   END IF;
+
+   -- Check if the password is too simple. A dictionary of words may be
+   -- maintained and a check may be made so as not to allow the words
+   -- that are too simple for the password.
+   IF NLS_LOWER(password) IN ('welcome', 'database', 'account', 'user', 'password', 'oracle', 'computer', 'abcd') THEN
+      raise_application_error(-20002, 'Password too simple');
+   END IF;
+
+   -- Check if the password contains at least one letter, one digit and one
+   -- punctuation mark.
+   -- 1. Check for the digit
+   isdigit:=FALSE;
+   m := length(password);
+   FOR i IN 1..10 LOOP 
+      FOR j IN 1..m LOOP 
+         IF substr(password,j,1) = substr(digitarray,i,1) THEN
+            isdigit:=TRUE;
+             GOTO findchar;
+         END IF;
+      END LOOP;
+   END LOOP;
+   IF isdigit = FALSE THEN
+      raise_application_error(-20003, 'Password should contain at least one digit, one character and one punctuation');
+   END IF;
+   -- 2. Check for the character
+   <<findchar>>
+   ischar:=FALSE;
+   FOR i IN 1..length(chararray) LOOP 
+      FOR j IN 1..m LOOP 
+         IF substr(password,j,1) = substr(chararray,i,1) THEN
+            ischar:=TRUE;
+             GOTO findpunct;
+         END IF;
+      END LOOP;
+   END LOOP;
+   IF ischar = FALSE THEN
+      raise_application_error(-20003, 'Password should contain at least one \
+              digit, one character and one punctuation');
+   END IF;
+   -- 3. Check for the punctuation
+   <<findpunct>>
+   ispunct:=FALSE;
+   FOR i IN 1..length(punctarray) LOOP 
+      FOR j IN 1..m LOOP 
+         IF substr(password,j,1) = substr(punctarray,i,1) THEN
+            ispunct:=TRUE;
+             GOTO endsearch;
+         END IF;
+      END LOOP;
+   END LOOP;
+   IF ispunct = FALSE THEN
+      raise_application_error(-20003, 'Password should contain at least one \
+              digit, one character and one punctuation');
+   END IF;
+
+   <<endsearch>>
+   -- Check if the password differs from the previous password by at least
+   -- 3 letters
+   IF old_password IS NOT NULL THEN
+     differ := length(old_password) - length(password);
+
+     IF abs(differ) < 3 THEN
+       IF length(password) < length(old_password) THEN
+         m := length(password);
+       ELSE
+         m := length(old_password);
+       END IF;
+
+       differ := abs(differ);
+       FOR i IN 1..m LOOP
+         IF substr(password,i,1) != substr(old_password,i,1) THEN
+           differ := differ + 1;
+         END IF;
+       END LOOP;
+
+       IF differ < 3 THEN
+         raise_application_error(-20004, 'Password should differ by at \
+         least 3 characters');
+       END IF;
+     END IF;
+   END IF;
+   -- Everything is fine; return TRUE ;   
+   RETURN(TRUE);
+END;
+/
+
+--프로파일 수정
+alter profile pro1 limit
+	PASSWORD_VERIFY_FUNCTION f1;
+
+select * from dba_profiles
+	where profile in 'PRO1';
+	
+alter user tom
+	identified by welcom; -> error 발생 too simple
+	
+alter user tom
+	identified by tom; -> error 발생 id랑 같애
+
+alter user tom
+	profile default;
+	
+--프로파일의 삭제
+drop profile pro1;
+
+==사용자 생성
+create user 사용자명
+	identified by 암호
+	[default tablespace 테이블스페이스명]
+	[profile 프로파일명]
+	[account {lock|unlock}]
+	[quota 크기 on 테이블스페이스명];
+	
+create user pink
+		identified by blue;
+grant connect, resource to pink;
+conn pink/blue
+	
+--사용자 삭제
+drop user pink;
+drop user tom; ->error 데이터가 있기 때문에
+
+drop user tom cascade; ->안에 있는 데이터까지 싹 날리는것
+
+==DCL : Data Control Language
+db내에서 특정작업을 할수 있는 권한을 부여하고 회수하는 기능
+grant : 권한부여
+revoke : 권한회수
+
+--권한종류
+시스템권한 : 오라클 서버에 영향을 주는 권한
+객체권한 : 특정 객체(테이블,인덱스등)에 영향을 주는 권한
+
+--시스템 권한 확인	
+select * from system_privilege_map;
+
+create user u1
+	identified by p1;
+create user u2
+	identified by p2;
+create user u3
+	identified by p3;
+
+grant 권한1, 권한2, ... to 사용자[with admin option]
+
+grant create session, create table to u1;
+grant create session, create table to u2	
+	with admin option;
+	
+conn u1/p1;
+create table t1 (
+	a number,
+	b varchar2(10),
+	c date);  -> error 시스템 테이블스페이스에 권한없음
+	
+conn system/1q2w3e4r
+alter user u1 default tablespace winter;
+alter user u2 default tablespace winter;
+alter user u3 default tablespace winter;
+
+alter user u1	
+	quota unlimited on winter;
+alter user u2
+	quota unlimited on winter;
+alter user u3
+	quota unlimited on winter;
+
+conn u1/p1;
+create table t1 (
+	a number,
+	b varchar2(10),
+	c date);
+
+conn u2/p2;
+create table t2 (
+	a number,
+	b varchar2(10),
+	c date);	
+grant create session, create table to u3; 
+-> admin옵션은 system이 준 옵션을 u2가 다른 사용자 u3 에게도 줄수있다
+
+--권한회수
+revoke create session, create table from u1, u2;  ->u3는 남아있어
+
+
+
+
+
+
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

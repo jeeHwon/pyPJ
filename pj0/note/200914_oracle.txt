@@ -1,0 +1,102 @@
+<Oracle> - 200914
+
+#환경구성
+www.oracle.com
+oracle 11g-엔터프라이즈,스탠다드,익스프레스
+Oracle Database 11g Release 2 Express Edition for Windows 64
+--설치확인
+시작-제어판-시스템및보안-관리도구-서비스
+--실행
+윈도우+R-cmd-sqlplus system/1q2w3e4r!
+sqlplus 사용자/암호
+
+
+#1 테이블스페이스 생성
+create tablespace 테이블스페이스명
+ 	datafile ‘파일명’ size 크기;
+create tablespace summer
+	datafile ‘D:\study\db\summer.dbf’ size 10m;
+
+#2 사용자 생성
+create user 사용자명
+	identified by 암호
+	[default tablespace 테이블스페이스명];
+create user happy
+	identified by day
+	default tablespace summer;
+
+#3 권한부여
+grant 권한1, [권한2 …] to 사용자명;
+grant connect, resource to happy;
+
+#4 사용자접속
+conn[ect] 사용자명 / 암호
+conn happy/day
+
+--현재 사용자 확인
+show user
+
+--현재 데이터베이스의 모든사용자 확인(system에게 권한있음)
+select username from dba_users;
+
+--테이블스페이스 목록 확인
+select tablespace_name,file_name,bytes from dba_data_files;
+
+--scott 사용자 생성(scott.sql)
+create user scott
+	identified by TIGER;
+
+--sql 파일 실행
+@경로/파일명
+@C:\oraclexe\app\oracle\product\11.2.0\server\rdbms\admin/scott.sql
+
+--현재 사용자의 테이블 확인
+select * from tab;
+select * from emp;
+set linesize 200
+set pagesize 30
+
+--환경설정 바꾸기(glogin.sql) c:오라클폴더내에서 파일찾아서 맨 밑에 추가하기
+set linesize 200
+set pagesize 30
+
+--사용자 암호변경(관리자 권한)
+conn system/1q2w3e4r!
+alter user scott
+	identified by tiger;
+	
+--관계형 데이터베이스(rdbms->객체형 db ->객체관계형 데이터베이스)
+
+--data 파일 실행하기
+@D:\study\oracle\data.txt
+select * from tab;
+
+--데이터의 조회
+select [distinct] {*|컬럼명1, 컬럼명2,..} from 테이블명
+	[where 조건]
+	[group by 그룹절]
+	[having 그룹절의 조건]
+	[order by 정렬];
+	
+--sawon 테이블의 모든 내용출력
+select * from sawon;
+
+--sawon 테이블의 이름, 입사일, 급여만 출력
+select saname, sahire, sapay from sawon;
+
+--sawon 테이블의 구조확인
+desc[ribe] 테이블명
+desc sawon
+
+--personnel 테이블에서 페이와 보너스 합계(빈칸 보너스 인식못해)
+select pay, bonus, pay+bonus from personnel;
+
+--nvl(포현식, 값) : 없는 값을 표현해줘
+select pno, pname, job, pay, nvl(bonus, -99) from personnel;
+
+--화면지우기
+cl scr
+
+--프로그램 종료
+quit
+

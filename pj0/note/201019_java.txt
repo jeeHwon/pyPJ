@@ -1,0 +1,161 @@
+<Java> 201019
+
+==JDBC 연결과정
+--전체 골격
+//PreparedStatement
+public class InsertTest01 {
+	
+	public static void main(String[] args) {
+		//각종 필요한 변수선언 -예) conn, stmt,pstmt, rs, sql
+		try {
+			//1. 드라이버 로딩
+			
+			//2. Connection 객체 얻기
+			//3-1. 실행객체- PreparedStatement 객체, Statement 객체
+			//3-2. 쿼리문실행 - executeUpdate() : insert, update, delete
+			//		  		 - executeUpdate()의 리턴형태는 int
+			//				 - executeQuery() : select
+			//				 - executeQuery()의 리턴형태는 ResultSet
+			//4. 추가작업
+			
+			
+		} catch (Exception e) {
+			// 
+		} finally {
+			//5.사용한 객체는 반납 : 객체.close();
+			
+		}
+		
+	}
+}
+
+--insert 예제
+package jdbc;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+//PreparedStatement 객체 이용 : 쿼리문을 미리 전달하여 나중에 실행
+public class InsertTest01 {
+	
+	public static void main(String[] args) {
+		//각종 필요한 변수선언 -예) conn, stmt,pstmt, rs, sql
+		String driver = "oracle.jdbc.driver.OracleDriver";
+		String url = "jdbc:oracle:thin:@localhost:1521:xe";
+		String user = "scott";
+		String password = "tiger";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			//1. 드라이버 로딩
+			Class.forName(driver);
+			//2. Connection 객체 얻기
+			conn = DriverManager.getConnection(url, user, password);
+			//3-1. 실행객체- PreparedStatement 객체 :conn.prepareStatement(sql)
+			//				 Statement 객체 : conn.createStatement()
+			//주의 : 쿼리문 복사 할 떄 ; 는 빼놓고 가져올것!!!!!!!!
+			String sql = "insert into emp(empno, ename, sal, hiredate) "
+					+ " values(eno_seq.nextval, '민2', 3000, sysdate)";
+			pstmt = conn.prepareStatement(sql);
+			//3-2. 쿼리문실행 - executeUpdate() : insert, update, delete
+			//		  		 - executeUpdate()의 리턴형태는 int
+			//				 - executeQuery() : select
+			//				 - executeQuery()의 리턴형태는 ResultSet
+			int cnt = pstmt.executeUpdate();//파라미터 없는걸로, 왜? 이미 prepare해서 쿼리문 장착했잖아
+			System.out.println("확인용 insert 실행결과 row수 = "+cnt);
+			
+			//4. 추가작업
+			if (cnt>0) {
+				System.out.println("입력 되었습니다");
+			}else {
+				System.out.println("입력 실패");
+			}
+			
+		} catch (Exception e) {
+			System.out.println("쿼리실행관련 error 발생 : "+e);
+		} finally {
+			//5.사용한 객체는 반납 : 객체.close();
+			try {
+				if (pstmt!=null) {pstmt.close();}
+				if (conn!=null) {conn.close();}
+				
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+			
+		}
+	}
+}
+
+--update 예제
+package jdbc;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+
+public class UpdateTest01 {
+
+	public static void main(String[] args) {
+		String driver = "oracle.jdbc.driver.OracleDriver";
+		String url = "jdbc:oracle:thin:@localhost:1521:xe";
+		String user = "scott";
+		String password = "tiger";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, user, password);
+			String sql = "update emp set sal=sal+300 "
+					+ " where empno=8000";
+			pstmt = conn.prepareStatement(sql);
+			
+			int cnt = pstmt.executeUpdate();
+			if (cnt>0) {
+				System.out.println("입력 되었습니다");
+			}else {
+				System.out.println("입력 실패");
+			}
+			
+			
+		} catch (Exception e) {
+			System.out.println("쿼리실행관련 error 발생 : "+e);
+		} finally {
+			//5.사용한 객체는 반납 : 객체.close();
+			try {
+				if (pstmt!=null) {pstmt.close();}
+				if (conn!=null) {conn.close();}
+				
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+}
+
+==test 
+1. main method
+2. 왜 오류없이 실행되는지(자바초반)
+3. 빈칸을 매꾸기 
+4. 코드를 주고 출력 결과값 예상
+5. math.random() : 난수 쓰는거
+6. keyboard 통해 입력받는 것 문자열로 받아서 숫자로 변환
+7. 반복문 써라
+8. 제어문 빈칸 매꾸기
+9. 배열 문제 향상된 for문 이용해서 빈칸 매꾸기
+10. select로 jdbc 통해 가져오기
+
+
+
+
+
+
+
+
+
+
+
+

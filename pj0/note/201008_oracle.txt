@@ -1,0 +1,242 @@
+<Oracle> 201008
+
+==메모리에서 오라클 온오프
+(메모리에서 아예 없는데에서 no mount 단계, mount단계, open단계 총3단계)
+(다 올라가는거 startup / 다 내려가는거 shutdown)
+sqlplus "/as sysdba"
+
+shutdown immediate; --진행중인 작업을 완료하고 메모리에서 오라클 제거
+shutdown abort; --진행중인 작업을 멈추고 메모리에서 오라클 제거
+startup 
+
+conn happy/day
+conn /as sysdba
+
+--mount 단계로 이동(다 껏다가 다시 올라가야해)
+shutdown immediate;
+startup mount
+conn happy/day --error mount 단계라 접속 불가(db가 오픈되지 않음)
+conn /as sysdba
+
+alter database open;
+conn happy/day
+
+==아카이브 로그 모드
+conn /as sysdba
+
+--데이터베이스 모드 확인
+select log_mode from v$database;
+
+--데이터베이스 모드 변경 : mount 단계에서만 가능
+shutdown immediate;
+startup mount;
+archive log list; --archive모드 확인
+alter database archivelog; --archive 모드로 변경
+archive log list;
+
+--데이터베이스 오픈
+alter database open;
+show parameter log_archive_start;
+--false 는 아카이브 프로세스를 수동으로 활성화 해야함
+
+==아카이브 프로세스 자동으로 활성화 (false -> true 로 변경)
+--1. archive log file 이름 결정
+show parameter log_archive_format
+
+--2. archive log file 위치 지정
+d:\ml\arc1
+d:\ml\arc2
+d:\ml\arc3 폴더 생성후에
+
+alter system
+	set log_archive_dest_1='location=d:\ml\arc1' scope=spfile;
+alter system
+	set log_archive_dest_2='location=d:\ml\arc2' scope=spfile;
+alter system
+	set log_archive_dest_3='location=d:\ml\arc3' scope=spfile;
+
+--3. archive 프로세스 자동 활성화
+alter system
+	set log_archive_start=true scope=spfile;
+
+--4. 오라클 재가동
+shutdown immediate;
+startup
+archive log list
+
+
+==백업 및 복구
+create tablespace red
+	datafile 'd:\study\db\red.dbf' size 10m;
+create tablespace green
+	datafile 'd:\study\db\green.dbf' size 10m;
+create user uu3
+	identified by uu3
+	default tablespace red;
+create user uu2
+	identified by uu2
+	default tablespace green;	
+grant connect, resource to uu3, uu2;
+
+conn uu3/uu3
+create table t1(
+	a number,
+	b varchar2(20),
+	c date);
+begin
+	for i in 1..100000 loop
+		insert into t1 values (i,'머신러닝반',sysdate);
+	end loop;
+end;
+/
+select count(*) from t1;
+commit;
+
+--데이터베이스 백업
+D:\study\db\red.dbf 파일을 D:\study\backup\red.dbf 로 복사
+
+begin
+	for i in 1..70000 loop
+		insert into t1 values (i,'머신러닝반',sysdate);
+	end loop;
+end;
+/
+select count(*) from t1;
+commit;
+
+==시나리오 1) 데이터베이스 운영중 데이터파일의 손상이 있는 경우
+conn /as sysdba
+alter tablespace red offline;
+
+--데이터파일 손상(D:\study\db\red.dbf 의 확장자 변경)
+alter tablespace red offline; --error
+
+--데이터파일 복구
+recover tablespace red;
+alter tablespace red online;
+
+--확인
+conn uu3/uu3
+select count(*) from t1;
+
+==시나리오 2) 백업본이 없는 경우
+conn uu2/uu2
+create table t1(
+	a number,
+	b varchar2(20),
+	c date);
+begin
+	for i in 1..200000 loop
+		insert into t1 values (i,'흣짜',sysdate);
+	end loop;
+end;
+/
+commit;
+select count (*) from t1;
+delete from t1 where a>5000;
+commit;
+select count (*) from t1; --5000건 데이터 남음
+
+--데이터파일 손상
+conn /as sysdba
+alter tablespace green offline;
+
+--확장자 변경(D:\study\db\green.dbf)
+alter tablespace green online;
+
+--데이터파일 경로변경
+alter database 
+	create datafile 'D:\study\db\green.dbf'
+		as 'D:\study\db\newGreen.dbf';
+
+--데이터 복구
+recover tablespace green;
+select count (*) from t1;
+alter tablespace green online;
+conn uu2/uu2
+select count (*) from t1;
+
+==시나리오 3) stratup 시 데이터파일 손상이 있는 경우
+D:\study\db\newGreen.dbf 파일을 
+	D:\study\backup\newGreen.dbf로 복사
+	
+begin
+	for i in 1..200 loop
+		insert into t1 values (i,'흣짜',sysdate);
+	end loop;
+end;
+/
+
+select count(*) from t1;
+commit;
+	
+conn /as sysdba
+shutdown immediate;
+
+--데이터파일 손상 (D:\study\db\newGreen.dbf 파일 확장자 변경)
+startup --error mount 단계이지 open 단계 아니라 테이블스페이스 인식불가
+recover tablespace green; --error
+
+--데이터파일 복원
+D:\study\backup\newGreen.dbf을 
+	D:\study\db\newGreen.dbf로 복사
+
+--데이터파일 복구
+recover tablespace green; 
+or
+recover database;
+
+--데이터베이스 오픈
+alter database open;
+conn uu2/uu2
+select count(*) from t1;
+
+==로그파일관리
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

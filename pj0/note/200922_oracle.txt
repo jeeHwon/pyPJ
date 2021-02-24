@@ -1,0 +1,191 @@
+<Oracle> 200922
+
+==크기 순서
+1)DB
+2)테이블스페이스(system, undo, temp..) 
+3)세그먼트(table, index, view..)
+4)익스턴트
+5)블럭
+
+==테이블스페이스 생성
+create tablespace 테이블스페이스명
+	datafile '경로 및 파일명' size 크기 ['경로 및 파일명2' size 크기..]
+
+--파일 여러개도 가능
+create tablespace spring
+	datafile 'D:\study\db\spring1.dbf' size 4M,
+		'D:\study\db\spring2.dbf' size 4M;
+
+desc dba_data_files;
+select TABLESPACE_NAME, FILE_NAME, BYTES from dba_data_files;
+
+create tablespace winter
+	datafile 'D:\study\db\winter.dbf' size 10M;
+
+==테이블스페이스 수정
+1)데이터파일 추가
+alter tablespace spring
+	add datafile 'D:\study\db\spring3.dbf' size 4M;
+
+select TABLESPACE_NAME, FILE_NAME, BYTES from dba_data_files
+	order by TABLESPACE_NAME;
+	
+2)데이터파일의 크기 조정
+alter database
+	datafile 'D:\study\db\winter.dbf' resize 20M;
+
+3)데이터 파일을 자동증가로 변경
+create tablespace summer
+	datafile 'D:\study\db\summer.dbf' size 10M;
+	
+alter database
+	datafile 'D:\study\db\summer.dbf' 
+	autoextend on next 2M maxsize 20M;
+
+--summer사용자 tom 생성해서 써보기
+create user tom
+	identified by jerry
+	default tablespace summer;
+	
+grant connect, resource to tom;
+
+conn tom/jerry
+select * from tab;
+
+--tom에서 테이블 생성 후 용량 채우자
+create table test1(no number, irum varchar2(10), day date);
+insert into test1 values (1, 'park', sysdate);
+
+--반복문 실행
+begin 
+	for i in 2..100000 loop
+		insert into test1 values (i, 'kim', sysdate);
+	end loop;
+end;
+/
+
+==테이블스페이스 삭제
+conn system/1q2w3e4r!
+drop tablespace spring; ->데이터파일 남음
+drop tablespace summer; ->불가(데이터 있어서)
+
+--데이터가 안에 있을 경우엔 컨텐츠까지 날려야하고
+drop tablespace summer
+	including contents;
+--데이터파일까지 날려야 db폴더내 데이터파일까지 자체적으로 날릴수 있어
+drop tablespace winter
+	including contents and datafiles;
+drop tablespace autumn
+	including contents and datafiles;
+	
+
+create tablespace autumn
+	datafile 'D:\study\db\autumn.dbf' size 10m;
+create tablespace winter
+	datafile 'D:\study\db\winter.dbf' size 10m;	
+	
+desc dba_users
+select USERNAME, DEFAULT_TABLESPACE from dba_users;
+
+--happy 사용자는 autumn, tom 사용자는 winter 테이블스페이스 사용하도록 설정
+alter user tom
+	default tablespace winter;
+alter user happy
+	default tablespace autumn;
+select USERNAME, DEFAULT_TABLESPACE from dba_users;
+
+conn happy/day
+@D:\study\oracle\data.txt
+select * from tab;
+--테이블이 저장된 테이블스페이스 확인 (happy는 user니까 dba_users아닌 걍 user)
+desc user_tables
+select TABLE_NAME, TABLESPACE_NAME from user_tables;
+
+--모두 autumn 되어있으니 winter도 해보자
+create table test1 (
+	a number,
+	b varchar2(10),
+	c date)
+	tablespace winter;
+select TABLE_NAME, TABLESPACE_NAME from user_tables;
+
+
+==테이블스페이스 이동(하드 변경될 때 주로 이용)
+conn system/1q2w3e4r
+select TABLESPACE_NAME, FILE_NAME, BYTES from dba_data_files
+	order by TABLESPACE_NAME;
+	
+--D:\study\db\autumn.dbf 를 D:\down\autumn.dbf 로 이동
+1)테이블스페이스 상태변경
+alter tablespace autumn offline;
+2)데이터파일 이동 : 걍 탐색기에서 이동하기
+3)데이터파일 위치 정보 변경(오라클내에서 이동한거 인식 못하니까 알려주자)
+alter tablespace autumn
+	rename datafile 'D:\study\db\autumn.dbf' 
+	to 'D:\down\autumn.dbf';
+4)테이블스페이스 다시 상태변경
+alter tablespace autumn online;
+
+select TABLESPACE_NAME, FILE_NAME, BYTES from dba_data_files
+	order by TABLESPACE_NAME;
+5) happy로 확인해보자 잘 이동됐는지
+
+
+==실습 ( 현사용자 happy)
+-- a는 기본형 / b는 총5자리 / c는 총5자리, 그중 소숫점 2자리
+desc personnel;
+--숫자형 테이블 생성
+create table t1 (
+	a number,
+	b number(5),
+	c number(5,2)
+	);
+insert into t1 values (10/7, 10/7, 10/7);
+select * from t1; 
+insert into t1 values (1000/7, 1000/7, 1000/7);
+select * from t1; 
+
+--날짜형 테이블 생성 (timestamp옆 숫자는 초단위 소숫점자리)
+create table t2 (
+	a date,
+	b timestamp,
+	c timestamp(0),
+	d timestamp(9)
+	);
+insert into t2 values (sysdate, sysdate, sysdate, sysdate);
+
+--문자형 테이블 생성 (char는 점하나 있어도 용량 전체 차지해 / 
+				varchar2는 데이터따라 쓰는 공간 용량 달라져)
+create table t3 (
+	a varchar2(10),
+	b char(10)
+	);
+insert into t3 values ('aa', 'aa');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	 

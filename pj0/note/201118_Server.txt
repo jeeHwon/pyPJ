@@ -1,0 +1,22 @@
+이영환
+010-6324-5873
+leelj1@nate.com
+cafe.naver.com/webjjangma
+
+서버프로그래밍 : JSP & Servlet
+- 요구사항 확인
+- 소프트웨어 공학 활용
+- 정적분석 모델
+- 동적분석 모델
+
+1.JAVA - JSP & Servlet 
+ : 웹프로그래밍-JSP, ASP ,PHP, Servlet, ASP.NET
+ 
+C:\Program Files\Java\jdk1.8.0_261
+JDK 1.8 = JAVA 8
+전자정부프레임워크 / 톰캣 / 이클립스
+- 실행확인
+path
+set JAVA_HOME
+set CLASSPATH
+IDE - eclipse / STS(eclipse + spring)

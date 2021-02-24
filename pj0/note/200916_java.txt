@@ -1,0 +1,238 @@
+<JAVA> - 200916
+
+
+//char 타입변수
+//자바는 모든 문자를 Unicode로 처리
+//Unicode는 세계 각국의 문자들을 코드값으로 매핑한 국제표준규약이다
+//Unicode는 16진수로 저장할 경우 '\\u+16진수 값'
+
+
+public class Ex04 {
+
+	public static void main(String[] args) {
+		char c1 = 'A'; //문자로 저장
+		char c2 = 65; //10진수로 저장
+		char c3 = '\u0041'; //16진수로 저장
+		
+		System.out.println("c1 = "+c1);
+		System.out.println("c2 = "+c2);
+		System.out.println("c3 = "+c3);
+	}
+
+}
+
+//타입 byte(1) < short(2) < int(4) < long(8)
+public class Ex05 {
+
+	public static void main(String[] args) {
+		/*
+		int v = 10;
+		long v0 = 10; //int형 10데이터가 long 타입 벼누로 자동형변환
+		long v1 = 10l;
+		long v2 = 10L;
+		
+		//long타입 변수를 초기화 할때는 정수값 뒤에 소문자 또는 대문자 L을 붙일수있다
+		//4byte 정수 데이터가 아니라 8byte 정수 데이터임을 알려준다
+		//int 타입의 저장범위를 넘어서는 큰 정수에서는 l, L을 붙여야 한다(우주,은행)
+		
+		System.out.println(v);
+		System.out.println(v0);
+		System.out.println(v1);
+		System.out.println(v2);
+		*/
+		
+		//자료형 변환 : 작은 크기타입이 큰 크기타입으로 저장될때
+		byte b1 = 10;
+		int i1 = b1;
+		System.out.println(i1); //10
+		
+		char c1 = '가';
+		i1 = c1; //위에서 int = i1 으로 선언해 줬기 때문에 다시 해주면 안돼
+		System.out.println(i1); //'가'
+		
+		i1 = 500;
+		long l1 = i1;
+		System.out.println(i1); //500
+		
+		i1 = 200;
+		double d1 = i1;
+		System.out.println(i1); //
+		
+		//강제형 변환 : 큰 크기의 데이터를 작은 크기 타입으로 강제로 저장할때
+		//작은타입 변수 = (강제형변환)변수;
+		//값의 손실이 발생될수 있으므로 주의
+		int i2 = 44032;
+		char c2 = (char)i2;
+		System.out.println(i2);
+		System.out.println(c2);
+		
+		long l2 = 50000000;
+		i2 = (int)l2;
+		System.out.println(l2);
+		
+		double p =3.14;
+		float f = (float)p;
+		System.out.println(f);
+		i2 = (int)p;
+		System.out.println(i2); //3 값의 손실
+		
+		//음수 10.0을 정수변수에 할당
+		double d2 = -10.0;
+		int i3 = (int)d2;
+		System.out.println(i3);
+		System.out.println(d2);
+		
+		float f2 = (int) -10.0;
+		System.out.println(f2);
+	
+		
+	}
+
+}
+
+
+==연산자
+//연산식에서의 자동타입 변환
+public class Ex06 {
+
+	public static void main(String[] args) {
+		//boolean(1) < char(2) < byte(1) < short(2) < int(4) < long(8) < float(4) < double(8)
+		byte b1 = 10;
+		byte b2 = 20;
+		//byte b3 = b1 + b2; error 발생 
+		//연산식에서 바이트변수가 자동으로 int형으로 변환됨
+		//int보다 작은 타입(char, byte, short)이 연산에 사용되면 int로 변환된다
+		byte b4 = (byte)(b1+b2);
+		System.out.println(b4);
+
+		char c1 = 'A';
+		char c2 = 1;
+		char c3 = (char)(c1+c2);
+		System.out.println(c3);
+		int a1 = c1;
+		System.out.println(a1);
+		
+		int i4 = 10;
+		int i5 = i4/4; //10을 4로 나눈 몫이 int 타입 변수 i5에 저장
+		//몫은 2.5로서 실수형이지만 정수 int에 저장되면서 값 손실 발생
+		System.out.println(i5);
+		
+		int i6 = 10;
+		//int i7 = 10/4.0; error 발생 / 정수랑 실수랑 만나면 큰 실수로 된다
+		//연산식에 실수리터럴이나 double타입이 있다면 
+		//다른 피연산자도 double 타입으로 자동변환된다
+		int i8 = (int)(14/3.0);
+		System.out.println(i8);
+		
+		int i9 = 128;
+		byte by1 = (byte)i9;
+		System.out.println(by1);
+		
+		
+	}
+
+}
+
+==연산자 우선순위
+- 산술> 비교> 논리 >대입
+- 단항>이항>삼항
+- 방향은 왼쪽에서 오른쪽 (다만, 단항이랑 대입만 오른쪽부터)
+
+package ch03;
+
+
+//연산자 
+public class Ex01 {
+
+	public static void main(String[] args) {
+		//부호연산자 
+		int x = -100;
+		int result = -x;
+		System.out.println("result = "+result);
+		int result1 = +x;
+		System.out.println("result = "+result1);
+		
+		short s = 100;
+		short result2 =(short) -s; //단항연산자 쓰면 short가 int로 바뀌니
+		//주의. 부호연산자의 산출 타입은 int가 된다.
+		System.out.println(result2);
+		
+		//논리부정연산자(!)
+		//true를 false로, false를 true로
+		boolean play = true;
+		
+		if (play) {
+			System.out.println("지금 play는 " + play);
+		}
+		play = !play;
+		
+		if (!play) {
+			System.out.println("if문 안의 play는 " + play);
+		}
+		
+
+	}
+
+}
+
+//증감 연산자
+//증가연산자(++) : 피연산자의 값을 1증가시킨다
+//감소연산자(--) : 피연산자의 값을 1 감소시킨다
+
+//전위형 : ++i 값이 참조되기 전에 증가시킨다
+//후위형  : i++ 값이 참조된 후에 증가시킨다
+public class Ex02 {
+
+	public static void main(String[] args) {
+		int x = 10;
+		int y = 10;
+		int z;
+		
+		System.out.println("---------------");
+		x++;
+		++x;
+		System.out.println("x="+x); //12
+		
+		System.out.println("---------------");
+		y--;
+		--y;
+		System.out.println("y="+y);// 8
+		
+		System.out.println("---------------");
+		z=x++;
+		System.out.println("z="+z);// 12
+		System.out.println("x="+x);// 13
+		
+		System.out.println("---------------");
+		z=++x;
+		System.out.println("z="+z);// 14
+		System.out.println("x="+x);// 14
+		
+		System.out.println("---------------");
+		z=++x + y++;
+		System.out.println("z="+z);// 23
+		System.out.println("x="+x);// 15
+		System.out.println("y="+y);// 9
+			
+		
+	}
+
+}
+
+package ch03;
+
+public class Ex03 {
+
+	public static void main(String[] args) {
+		//double pi = 3.14;
+		long a = Math.round(Math.PI); // PI 는 상수, 변수선언 불가
+		System.out.println(a);
+		System.out.println(Math.E);
+		
+			}
+
+}
+
+
+
+

@@ -1,0 +1,440 @@
+<Oracle> - 200915
+
+--personnel 구조확인
+desc 테이블명
+desc personnel
+select * from personnel;
+
+--personnel 테이블에서 사번, 이름, 직책, 급여, 보너스, 합계
+select pno, pname, job, pay, bonus, pay+bonus from personnel;
+#보너스 값이 null인 경우 연산이 안돼.. 합계가 안나와
+
+--nvl(표현식, 값)
+select pno, pname, job, pay, nvl(bonus, 0) from personnel;
+select pno, pname, job, pay, bonus, pay+nvl(bonus, 0) from personnel;
+
+--컬럼명에 alias(별칭) : 컬럼명은 기본 대문자, 소문자나 띄어쓰기는 ""쓰기
+select pno 사번, pname "name", job "Job", pay "급  여", bonus 보너스, pay+nvl(bonus, 0) 토탈 from personnel;
+
+--personnel tab에서 직책 출력
+select job from personnel; #모든 직책이 나온다
+select distinct job from personnel; #중복 제거 후 나온다
+
+--personnel tab에서 이름, 직책, 급여 출력(단, 급여 3000이상)
+select pname, job, pay from personnel where pay>=3000
+
+--personnel tab에서 이름, 직책, 급여 출력(단, 직책이 매니져)
+select pname, job, pay from personnel 
+	where job='MANAGER';
+(명령어는 상관 없지만 저장된 데이터는 대소문자 구분한다. MANAGER로 저장되어
+있으면 MANAGER로, if manager로 검색하면 못찾음 )
+
+--personnel tab에서 이름, 직책, 급여 출력(단, 직책이 매니져 or 세일즈맨)
+select pname, job, pay from personnel 
+	where job='MANAGER' or job='SALESMAN';
+select pname, job, pay from personnel 
+	where job in ('MANAGER', 'SALESMAN');
+	
+--personnel tab에서 이름, 직책, 급여 출력(단, 급여가 1000이상 2000이하)	
+select pname, job, pay from personnel 
+	where pay>=1000 and pay<=2000;
+select pname, job, pay from personnel 
+	where pay between 1000 and 2000;
+
+--personnel tab에서 이름, 직책, 급여 출력(단, 직책이 세일즈맨 아님)
+select pname, job, pay from personnel 
+	where job!='SALESMAN';	
+select pname, job, pay from personnel 
+	where job<>'SALESMAN';	
+	
+--personnel tab에서 이름, 급여, 보너스 출력(단, 보너스를 받는 사람)	
+select pname, pay, bonus from personnel 
+	where bonus>0;
+	
+--personnel tab에서 이름, 급여, 보너스 출력(단, 보너스를 안받는 사람)	
+select pname, pay, bonus from personnel 
+	where bonus=0; (안돼 null이 있잖아)
+select pname, pay, bonus from personnel 
+	where bonus=null; (안돼 null은 값자체가 없기 때문에 비교 불가)
+select pname, pay, bonus from personnel 
+	where bonus is null; (보너스 null 인 사람)
+select pname, pay, bonus from personnel 
+	where bonus is not null; (보너스 null 아닌사람)
+따라서,
+select pname, pay, bonus from personnel 
+	where bonus=0 or bonus is null;
+	
+--컬럼 길이 조절
+select pname, pay, bonus from personnel;
+col job format a10
+col pname format a10
+select pname, pay, bonus from personnel;
+	
+--연결 연산자(||)
+select pname, job, pay from personnel;
+select pname||job||pay from personnel;
+select pname||'의 직책은 '||job||'이고 급여는 '||pay||'원이다.' from personnel;
+
+--% : 여러 문자열, _: 문자하나
+--이름, 직책, 급여 출력 (단, 이름이 5글자)
+select pname, job, pay from personnel
+	where pname like '_____';
+	
+--이름, 직책, 급여 출력 (단, 이름 두번째 글자가 A)
+select pname, job, pay from personnel
+	where pname like '_A%';
+	
+--이름, 직책, 급여 출력 (단, 이름이 J로 시작)
+select pname, job, pay from personnel
+	where pname like 'J%';
+	
+--data 파일 지우고 다시 실행하고 싶을때(다만 휴지통에 지운파일남아)
+@d:\study\oracle\data.txt
+
+--휴지통 비우기
+purge recyclebin;
+
+--합집합, 교집합, 차집합
+desc dept
+create table d1
+	as 
+	select * from dept;
+create table d2
+	as 
+	select * from dept where deptno>20;
+select * from d1;
+select * from d2;
+insert into d2 values (99, '기획부' , '서산');
+insert into d2 values (88, '이벤트' , '제주도');
+
+--합집합(중복X / 중복O)
+select * from d1
+	union
+	select * from d2;
+select * from d1
+	union all
+	select * from d2;
+	
+--교집합
+select * from d1
+	intersect
+	select * from d2;
+
+--차집합
+select * from d1
+	minus
+	select * from d2;
+	
+--정렬
+select * from personnel
+	order by pay;
+select * from personnel
+	order by pay desc;
+select * from personnel
+	order by job asc;
+select * from personnel
+	order by job asc, pay desc;
+	
+==실습==
+--사용자는 scott으로 함,테이블은 emp
+select * from emp;
+
+--1.부서번호가 10번인 부서의 사람중 사원번호, 이름, 월급출력
+select empno, ename, sal from emp
+	where deptno =10;
+	
+--2.사원번호가 7369인 사람중 이름,입사일, 부서번호를출력
+select ename, hiredate, deptno from emp
+	where empno =7369;
+	
+--3.이름이 ALLEN인 사람의 모든 정보출력
+select * from emp
+	where ename ='ALLEN'; 
+
+--4.입사일이 83/01/12인 사원의 이름,부서번호,월급출력
+select ename, deptno, sal from emp
+	where hiredate = '83/01/12';
+
+--5.직업이 MANAGER가 아닌사람의 모든정보 출력
+select * from emp
+	where job!= 'MANAGER';
+
+--6.입사일이 81/04/02 이후에 입사한 사원의 정보출력
+select * from emp
+	where hiredate > '81/04/02';
+
+--7.급여가 800 이상인 사람의 이름, 급여,부서번호 출력
+select ename, sal, deptno from emp	
+	where sal >= 800;
+
+--8.부서번호가 20번 이상인 사원의 모든 정보 출력
+select * from emp	
+	where deptno >=20;
+
+--9.입사일이 81/02/09 보다 먼저 입사한 사람들의 모든 정보 출력
+select * from emp
+	where hiredate < '81/02/09';
+	
+--10.입사번호가 7698보다 작거나 같은사람들의 입사번호와 이름 출력
+select empno, ename from emp
+	where empno <= 7698;
+
+==숫자함수
+conn happy/day
+select 10/7 from sawon;
+select 10/7 from dept; -> 각 테이블 건수만큼 나온다
+select 10/7 from dual; -> 한번만 계산하게 해주는 테이블
+--올림, 버림
+select 10/7, ceil(10/7), floor(10/7) from dual;
+--소수점 올림, 버림
+select 10/7, round(10/7,3), trunc(10/7,3) from dual;
+--사원테이블에서 이름, 급여, 월급, 세금출력
+	(월급 = 급여/12, 단 50원 이상 반올림하여 백단위로 표현, 
+	세금은 급여의 3%로 원단위 절삭)
+select saname, sapay, 
+	round(sapay/12, -2) 월급, 
+	trunc(sapay*0.03, -1) 세금
+	from sawon;
+--나머지, 절대값, 지수
+select mod(10,3), abs(-777), power(2,3) from dual;
+
+==문자함수
+--소문자,첫문자만대문자, 대문자
+select pname, lower(pname), initcap(pname), upper(pname) from personnel;
+--붙여서이어쓰기 (||는 갯수도 제한 없고 숫자도 붙일수 있다)
+select concat(pname, job), pname||job from personnel;
+--길이값, 바이트값, 특정문자 추출
+select length('happy'),length('경영기술개발원') from dual;
+select lengthb('happy'),lengthb('경영기술개발원') from dual;
+select 'abcde', substr('abcde',4), substr('abcde', 2, 3) from dual;
+--빈칸 특정 문자로 채우기
+select 'ringdingdong', lpad('ringdingdong', 15, '*') from dual;
+select 'ringdingdong', rpad('ringdingdong', 15, '@') from dual;
+
+--decode(표현식, 조건1, 값1, 조건2, 값2, 조건3, 값3..)
+select pname, job, pay from personnel;
+--MANAGER이면 급여의 10%를 incentive,
+	SALESMAN이면 15%, 
+	PRESIDENT이면 20%
+select pay, job, pay, 
+	decode(job, 
+	'MANAGER', pay*0.1, 
+	'SALESMAN', pay*0.15, 
+	'PRESIDENT', pay*0.2) 
+	incentive from personnel;
+	
+--사원테이블에서 이름, 부서번호, 부서명 출력
+	(단, 부서번호가 10이면 총무부
+	20이면 영업부, 30이면 전산부, 40이면 관리부)
+select saname,deptno,
+	decode(deptno,
+	10, '총무부',
+	20, '영업부',
+	30, '전산부',
+	40, '관리부')
+	부서명 from sawon;
+
+--고객테이블에서 고객명, 주민번호, 성별출력
+select goname, gojumin, decode(
+	substr(gojumin, 8, 1),
+	1, '남',
+	2, '여')
+	성별 from gogek;
+	
+==날짜함수
+select sysdate from dual;
+--날짜-날짜 = 숫자
+select pname, startdate from personnel;
+select pname, startdate-sysdate from personnel;
+--날짜+숫자 = 날짜
+select sysdate+3 from dual;
+
+--시간 변경하기
+alter session 
+	set nls_date_format='yyyy-mm-dd hh:mi:ss';
+	alter session 
+	set nls_date_format='yyyy-mm-dd hh:mi:ss am';
+	alter session 
+	set nls_date_format='yyyy-mm-dd hh24:mi:ss';
+	alter session
+	set nls_date_format='yyyy-mm-dd hh:mi:ss am bc';
+--날짜+숫자/24
+
+
+== 실습 2 스콧사용자로 emp 테이블
+
+
+--12.입사일이 81/04/02보다 늦고 82/12/09보다 빠른 사원의 이름,월급,부서번호 출력
+select ename, sal, deptno from emp
+	where hiredate > '81/04/02' and hiredate < '82/12/09';
+
+--13.급여가 1600보다 크고 3000보다 작은 사람의 이름,직업, 급여 출력
+select ename, job, sal from emp
+	where sal > 1600 and sal < 3000;
+
+--14.사원번호가 7654와 7782사이 이외의 사원의모든 정보출력
+select * from emp
+	where empno < 7654 or empno > 7782;
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+--16.입사일이 81년 이외에 입사한 사람의 모든 정보 출력
+select * from emp
+	where substr(hiredate, 1, 2) <> 81;
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+--17.직업이 MANAGER와 SALESMAN인 사람의 모든 정보 출력
+select * from emp
+	where job = 'MANAGER' or job = 'SALESMAN';
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+--18.부서번호가 20,30번을 제외한 모든 사람의 이름, 사원번호, 부서번호 출력
+select * from emp
+	where deptno <> 20 and deptno <> 30;
+
+--19.이름이 S로 시작하는사원의 사원번호, 이름, 입사일, 부서번호 출력
+select * from emp
+	where ename like 'S%';
+
+--20.입사일이 81년도인 사람의 모든 정보 출력
+select * from emp
+	where substr(hiredate, 1, 2) = 81;
+
+--21.이름중 S자가들어가 있는 사람만 모든정보 출력
+select * from emp
+	where ename like '%S%';
+
+--22.이름이 S로시작하고 마지막 글자가 T인 사람의 모든 정보 출력(단 이름은 전체 5자리)
+select * from emp
+	where ename like 'S___T';
+
+--23.첫번째 문자는관계없고 두번째 문자가 A인사람의 정보출력
+select * from emp
+	where ename like '_A%';
+
+--24.커미션이 NULL인사람의 정보를출력
+select * from emp
+	where comm is null;
+
+--25.커미션이 NULL이아닌 사람의 모든 정보 출력
+select * from emp
+	where comm is not null;
+
+--26.부서가 30번부서이고 급여가1500이상인 사람의 이름, 부서,월급출력
+select * from emp
+	where deptno = 30 and sal >= 1500;
+
+--27.이름의 첫글자가 K로 시작하거나 부서번호가 30번인사람의 사원번호, 이름, 부서번호 출력
+select * from emp
+	where ename like 'K%' or deptno = 30;
+
+--28.급여가 1500이상이고 부서번호가 30번인 사원중 직업이 MANAGER인 사람의 정보출력
+select * from emp
+	where sal >=1500 and deptno = 30 and job = 'MANAGER';
+
+--29.부서번호가 30번인 사람중 사원번호 정렬하라
+select * from emp
+	where deptno = 30 order by empno;
+
+--30.급여가 많은 순 정렬
+select * from emp
+	order by sal desc;
+
+--31.부서번호로 오름차순 정렬후 급여많은순 출력
+select * from emp
+	order by deptno , sal desc;
+
+--32.부선번호로 내림차순정렬하고 이름순 오름차순, 급여순 내림차순
+select * from emp
+	order by deptno desc , ename, sal desc;
+
+@@@@@@@답지@@@@@@@@@@@답지@@@@@@@@@@답지@@@@@@@@@@@답지
+--12.입사일이 81/04/02보다 늦고 82/12/09보다 빠른 사원의 이름,월급,부서번호 출력
+
+select ename, sal, deptno from emp where hiredate > '81/04/02' and hiredate < '82/12/09';
+
+--13.급여가 1600보다 크고 3000보다 작은 사람의 이름,직업, 급여 출력
+
+select ename, job, sal from emp where sal > 1600 and sal < 3000;
+
+--14.사원번호가 7654와 7782사이 이외의 사원의모든 정보출력
+
+select * from emp where empno!=7654 and empno != 7782;
+
+--16.입사일이 81년 이외에 입사한 사람의 모든 정보 출력
+
+select * from emp where hiredate < '81/01/01' or hiredate > '81/12/31';
+
+--17.직업이 MANAGER와 SALESMAN인 사람의 모든 정보 출력
+
+select * from emp where job='MANAGER' or job='SALESMAN';
+
+--18.부서번호가 20,30번을 제외한 모든 사람의 이름, 사원번호, 부서번호 출력
+
+select ename, empno, deptno from emp where deptno != 20 and deptno != 30;
+
+--19.이름이 S로 시작하는사원의 사원번호, 이름, 입사일, 부서번호 출력
+
+select empno, ename, hiredate, deptno from emp where ename like 'S%';
+
+--20.입사일이 81년도인 사람의 모든 정보 출력
+
+select * from emp where hiredate > '80/12/31' and hiredate < '82/01/01';
+
+--21.이름중 S자가들어가 있는 사람만 모든정보 출력
+
+select * from emp where ename like '%S%';
+
+--22.이름이 S로시작하고 마지막 글자가 T인 사람의 모든 정보 출력(단 이름은 전체 5자리)
+
+select * from emp where ename like 'S___T';
+
+--23.첫번째 문자는관계없고 두번째 문자가 A인사람의 정보출력
+
+select * from emp where ename like '_A%';
+
+--24.커미션이 NULL인사람의 정보를출력
+
+select * from emp where comm is null;
+
+--25.커미션이 NULL이아닌 사람의 모든 정보 출력
+
+select * from emp where comm is not null;
+
+--26.부서가 30번부서이고 급여가1500이상인 사람의 이름, 부서,우러급출력
+
+select ename, deptno, sal from emp where deptno = 30 and sal >= 1500;
+
+--27.이름의 첫글자가 K로 시작하거나부서번호가 30번인사람의 사원번호, 이름, 부서번호 출력
+
+select empno, ename, deptno from emp where ename like 'K%' or deptno=30;
+
+--28.급여가 1500이상이고 부서번호가 30번인 사원중 직업이 MANAGER인 사람의 정보출력
+
+select * from emp where sal >= 1500 and deptno = 30 and job='MANAGER';
+
+--29.부서번호가 30번인 사람중 사원번호 정렬하라
+
+select * from emp where deptno=30 order by empno;
+
+--30.급여가 많은 순 정렬
+
+select * from emp order by sal desc;
+
+--31.부서번호로 오름차순 정렬후 급여많은순 출력
+
+select * from emp order by deptno , sal desc;
+
+--32.부선번호로 내림차순정렬하고 이름순 오름차순, 급여순 내림차순 정렬
+
+select * from emp order by deptno desc, ename, sal desc;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

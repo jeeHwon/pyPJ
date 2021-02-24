@@ -1,0 +1,69 @@
+<Java> 201012
+
+test.자신이름으로 된 패키지명을 생성하세요
+예)이순신이라면 
+	test.leeSunShin 
+	
+	
+==과제
+객체
+
+
+공통
+1. println 메소드 4개 만들기. 필드는 자유.
+
+  PrinterExample클래스에서 Printer 객체를 생성하고
+  println()메소드를 호출해서 매개값을 콘솔에 출력하려고 한다.
+  println()메소드의 매개값으로는 int, boolean, double, String값을 줄 수 있다.,
+  
+  Printer클래스에서 println()메소드를 선언하시오.
+  (필요시 메소드 오버로딩가능)
+  출력결과
+  	10
+	true
+	5.7
+	홍길동	
+-----------------------------------------------
+
+2.
+1안
+MemberService클래스에서 
+ 	login()메서드를 선언하려고 한다
+ 	login()메서드를 호출할 때에는 매개값으로 id와 password를 제공할 것.
+ 	logout()메서드는  id만 매개값으로 제공할 것.
+
+  MemberService클래스에서 	login(),logout() 선언하시오.
+  
+  1. login()메서드는 매개값id가 "hong", 매개값 password가 "12345"일
+   	 경우에만  true를 리턴, 그외는 false리턴
+  2. logout()메서드의 실행결과는 "로그아웃 되었습니다"가 출력
+  
+  출력결과 - id와 비번이 일치시 
+  	로그인 되었습니다.
+	로그아웃 되었습니다.
+	
+  출력결과 - id와 비번이 일치x
+	id 또는 password가 올바르지 않습니다.
+
+  MemberService클래스와 실행클래스인  MemberServiceExample클래스생성하시오.
+ 
+3.
+1안. Account클래스는
+	은행 계좌 객체인 Account객체는 잔고(balance)필드를 가지고 있다
+	잔고(balance)필드는 음수값이 될 수 없고, 최대 100만원까지만 저장할 수 있다.
+	외부에서 balance필드를 마음대로 변경하지 못하도록 하고,
+	0<= balance <=1000000Q범위의 값만 가질 수 있도록 
+	Account클래스를 작성하시오
+	1. setter & getter 이용
+	2. 0과 1000000은 MIN_BALANCE와 MAX_BALANCE상수를 선언해서 이용
+	3. setter의 매개값이 음수이거나 백만원을 초과하면 현재 balance값을 유지
+
+ Account클래스와 실행클래스인 AccountExample클래스생성하시오.
+
+-----------------------------------------------
+2.
+2안 MemberService클래스와 실행클래스인 AccountExample클래스를 완성하시오.
+
+
+3.
+2안 Account클래스와 실행클래스인 AccountExample클래스를 완성하시오.

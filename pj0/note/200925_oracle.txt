@@ -1,0 +1,272 @@
+<Oracle> 200925
+
+==외부파일 입력
+http://www.naver.com/robots.txt ->disallow
+https://www.bobaedream.co.kr/robots.txt -> allow
+
+--외부파일 : 읽기 전용
+D:\study\oracle\product.csv
+1)디렉토리 생성(일반사용자는 권한없어, 권한부여 해야해)
+create directory 디렉토리명 as 경로;
+create directory source as 'D:\study\oracle'; ->error
+
+2)권한부여
+conn system/1q2w3e4r!
+grant dba to tom; 
+
+conn tom/jerry
+create directory source as 'D:\study\oracle';
+
+if) 디렉토리 삭제
+drop directory source;
+
+2)테이블 생성
+create table product_ext(
+no number,
+irum varchar2(20),
+maker varchar2(20),
+price number
+)
+organization external(
+	type oracle_loader
+	default directory source
+	location ('product.csv')
+);
+
+
+3)조회
+select * from product_ext;
+
+4)데이터입력
+insert into product_ext values (60, '건조기', 'LG', 150000); ->error
+
+4-1)일반테이블로 변경
+create table product
+	as
+	select * from product_ext;
+	
+alter table product
+	add constraint product_no_p primary key(no);
+	
+alter table product
+	add constraint product_price_c check (price>10000);
+
+alter table product
+	modify (irum varchar2(20) constraint product_irum_n not null);
+	
+insert into product_ext values (60, '건조기', 'LG', 150000);
+
+4-2)외부테이블 삭제
+drop table product_ext;
+
+--시퀀스
+create sequence 시퀀스명 [옵션 ..];
+
+select * from tab;
+create table fruit(
+	fno number constraint fruit_fno_p primary key,
+	fname varchar2(20),
+	price number
+);
+create table member(
+	mno number constraint member_mno_p primary key,
+	fname varchar2(20),
+	price number
+);
+
+create sequence fruit_seq;
+create sequence member_seq
+	increment by 10
+	start with 10;
+
+select table_name from dictionary
+	where table_name like '%SEQ%';
+select * from USER_SEQUENCES;
+
+--속성
+시퀀스명.nextval : 자동번호 부여
+시퀀스명.currval : 마지막으로 부여된 번호 조회
+
+insert into fruit values (fruit_seq.nextval, '포도', 2000);
+insert into fruit values (fruit_seq.nextval, '사과', 3000);
+insert into fruit values (fruit_seq.nextval, '수박', 1000);
+select * from fruit;
+
+insert into member values (member_seq.nextval, '호동이', '111');
+insert into member values (member_seq.nextval, '포동이', '222');
+insert into member values (member_seq.nextval, '대동이', '333');
+select * from member;
+
+select fruit_seq.currval, member_seq.currval from dual;
+
+rollback;
+
+insert into fruit values (fruit_seq.nextval, '짭짜리', 1000);
+insert into fruit values (fruit_seq.nextval, '사과', 1000);
+select * from fruit;  ->123 다음 2122시작해 왜그래?
+
+--Cache 사이즈 : 기본으로 20개씩 생성해서 쓰고 다쓰면 또 20개씩 가져다 쓴다
+select * from USER_SEQUENCES;
+
+--dba 권한 제거
+conn system/1q2w3e4r
+revoke dba from tom;
+conn tom/jerry;
+
+==뷰 : 가상의 테이블, 쿼리만 저장, 사용의 편의성, 보안
+@D:\study\oracle\data.txt
+--번호, 이름, 수능, 내신, 면접, 실기, 학과명
+select student.bunho, irum, s1, s2, s3, s4, partname
+	from student, score, tech, part
+	where 
+	student.bunho=score.bunho and
+	student.bunho=tech.bunho and
+	student.partcd=part.partcd;
+	
+--뷰의 생성 및 수정
+create or replace view 뷰이름 : replace 까지 하면 같은 이름의 뷰를 덮어쓸수있음
+	as select 절 [옵션] 
+
+create view haksa
+		as
+		select student.bunho, irum, s1, s2, s3, s4, partname
+			from student, score, tech, part
+			where 
+			student.bunho=score.bunho and
+			student.bunho=tech.bunho and
+			student.partcd=part.partcd;  ->권한 뺏었으니 안돼 다시줘야해
+
+conn system/1q2w3e4r			
+grant dba to tom;
+conn tom/jerry
+
+create or replace view haksa
+		as
+		select student.bunho, irum, s1, s2, s3, s4, s1+s2+s3+s4 hap, partname
+			from student, score, tech, part
+			where 
+			student.bunho=score.bunho and
+			student.bunho=tech.bunho and
+			student.partcd=part.partcd;
+
+select * from haksa;
+
+--뷰의 삭제
+drop view haksa;
+
+--뷰의 보안
+create view insa
+	as
+	select sabun, saname, sajob, sahire from sawon;
+
+--뷰를 바꿨는데 테이블이 바뀐다.. 따라서 설정해줘야해
+select * from insa;
+update insa set sajob='팀장';
+select * from insa;
+
+--뷰 (읽기전용으로 만들기)
+create view insa2
+	as
+	select sabun, saname, sajob, sahire from sawon
+	with read only;
+	
+update insa2 set sajob='부장'; -> error 읽기만해라
+
+create or replace view insa10
+	as
+	select sabun,saname,sajob,deptno from sawon
+	where deptno=10;
+
+select * from insa10;
+
+insert into insa10 values(91,'둘리','과장',10);
+insert into insa10 values(92,'노돌리','사원',10);
+insert into insa10 values(93,'희동쓰','사원',20); ->insa10에선 안보여(sawon은보여)
+select * from insa10;
+select * from sawon;
+
+--insa10에서 20부서까지 작성되는건 이상해. 20은 안그렇게 해보자
+create or replace view insa20
+	as
+	select sabun,saname,sajob,deptno from sawon
+	where deptno=20
+	with check option;
+
+insert into insa20 values (81,'무사시','사원',20);
+insert into insa20 values (82,'링링','사원',30); ->error (옵션줬으니)
+
+--현재 사용자의 뷰 조회
+desc dictionary;
+select table_name from dictionary
+	where table_name like '%VIEW%';
+select * from USER_VIEWS;
+
+
+--index : 기본키와 유니크 제약에 자동생성 (primary key 는 하나밖에 없어서 2번째로도 가능)
+select object_name, Object_type for user_objects;
+alter table member
+	drop constraint member_mno_p;
+alter table fruit
+	drop primary key;
+
+--index 수동생성
+create index 인덱스명 on 테이블명(컬럼명);
+
+create index i_sawon_pay
+	on sawon(sapay);
+	
+select * from sawon where sapay>2000; (index 바탕으로 찾는데 도움줄수도)
+drop index i_sawon_pay;
+
+--index 소문자, 대문자 섞여있는 경우 통일하려고
+create index i_sawon_saname
+	on sawon(upper (saname));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+
+
+
+
+
+	
+
+
+
+
+
+
+
+

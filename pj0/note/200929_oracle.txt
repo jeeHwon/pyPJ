@@ -1,0 +1,386 @@
+<Oracle> 200929
+
+==롤: 권한의 집합
+conn system/1q2w3e4r!
+revoke create session, create table from u3;
+
+conn u1/p1 -> error
+conn u2/p2 -> error
+conn u3/p3 -> error 다 권한 뺏었어
+
+
+--시스템 롤 확인 (어떤게 있는지)
+conn system/1q2w3e4r
+select * from dba_roles;
+
+--role 생성
+create role 롤이름;
+create role r1;
+
+--role 에게 권한 부여
+grant 권한1, 권한2.. to 롤이름;
+grant create session, create table to r1;
+
+--role 을 사용자에게 부여
+grant 롤이름1, 롤이름2.. to 사용자1, 사용자2..;
+grant r1 to u1, u2; -> u1 u2는 접속 가능 / u3는 불가
+
+--role 에 부여된 권한 확인
+select * from role_sys_privs;
+select * from role_sys_privs where ROLE='R1';
+
+--디폴트롤
+connect : 데이터베이스에 접근의 권한
+resource : 기본적인 (테이블, 인덱스,..) 생성, 변경, 삭제
+		unlimited 테이블스페이스 내장
+dba : DB를 관리하기 위해 필요한 권한
+
+create role r2;
+grant create session, create table, create view to r2;
+grant r2 to u3;
+
+select * from dba_roles;
+select * from role_sys_privs where ROLE like'R_';
+
+--현재 사용자에게 부여된 롤 정보
+select * from user_role_privs;
+
+
+--권한 제거시
+--사용자로부터 롤제거
+revoke 롤이름1, 롤이름2.. from 사용자
+revoke r1 from u1, u2;
+revoke r2 from u3;
+
+--롤삭제
+drop role 롤이름;
+drop role r1; 
+drop role r2;
+
+create role r3;
+grant create session, create table to r3 with admin option;
+grant r3 to u1;
+
+conn u1/p1
+grant r3 to u2; -> error 권한 받았다고 줄순 없어
+
+--객체권한
+grant 권한1, 권한2, ... on 객체명 to 사용자명;
+revoke 권한1, 권한2, ... on 객체명 from 사용자명;
+with grant option
+conn system/1q2w3e4r
+select * from student; -> error 자기한텐 없으니까
+select * from happy.student;
+
+
+conn happy/day -> 해피가 자기 꺼 볼수 있게 권한주는 것
+grant select on personnel to scott;
+grant select, insert, update on personnel to u1;
+
+conn scott/tiger;
+select * from happy.personnel;
+select * from happy.division; ->error 얜 권한 안줬으니
+insert into happy.personnel (pno, pname) 
+	values (7777,'칠칠칠'); ->error 얘도 권한 안줬으니
+	
+conn u1/p1
+update happy.personnel set job='사원';
+select * from happy.personnel;
+delete from happy.personnel; -> error
+
+conn happy/day
+revoke select on personnel from scott;
+revoke insert, update on personnel from u1;
+select * from division;
+
+--모든 사용자에게 권한 부여
+grant select on division to public;
+conn system/1q2w3e4r
+alter user hr
+	identified by hr
+	account unlock;
+
+conn hr/hr
+select * from happy.division;
+
+conn u1/p1
+select * from happy.division;
+
+conn happy/day
+revoke select on division from public;
+
+
+
+==객체롤
+--롤 생성
+conn system/1q2w3e4r!
+create role obj1;
+
+conn scott/tiger
+grant select on emp to obj1;
+grant select, insert on dept to obj1;
+
+--롤부여
+system/1q2w3e4r
+grant obj1 to happy; 
+
+conn happy/day
+select * from scott.emp;
+select * from scott.dept;
+insert into scott.dept values (99, '이벤트', '제주');
+select * from scott.dept;
+grant select on personnel to obj1;
+
+
+--롤 권한 제거
+conn scott/tiger
+revoke select on emp from obj1;
+
+--롤 삭제
+conn system/1q2w3e4r!
+drop role obj1;
+
+--롤에는 with grant option 사용불가
+grant obj1 to u1 with grant option;
+conn happy/day
+grant select on student to u1;
+grant select on student to scott with grant option;
+
+conn u1/p1
+select * from happy.student;
+grant select on happy.student to hr;
+
+conn scott/tiger
+select * from happy.student;
+grant select on happy.student to hr;
+
+
+
+==Synonym (동의어) : 테이블 등의 객체 사용시 간편하게 접근하기 위해 만드는 별명
+conn happy/day
+create [public] synonym 동의어명 for 객체명;
+create synonym dd for division;
+select * from dd;
+select * from division;
+grant select on division to scott;
+
+conn scott/tiger
+select * from dd; -> error 동의어 얘는 못써
+select * from happy.division;
+
+conn happy/day
+create public synonym sss for student;
+grant select on student to scott;
+
+conn scott/tiger
+select * from sss; -> public으로 동의어 만들었으니 쓸수있어
+
+--동의어 삭제
+conn happy/day
+drop synonym dd;
+drop public synonym sss;
+
+
+
+==PL-SQL : 오라클에서 제공하는 프로그래밍 언어
+	하나의 프로그램은 하나의 파일로 실행
+	기본적으로 처리된 결과를 화면에 출력안함
+	출력시는 set serveroutput on
+
+
+--기본형식
+declare
+	변수 자료형
+begin
+	내용(sql or pl/sql)
+end;
+/
+
+--파일 만든 후 .sql로 저장
+declare
+	i number := 3;
+begin
+	dbms_output.put_line('i='||i);
+end;
+/
+
+
+--파일 실행
+set serveroutput on
+@d:\study\oracle\0929.sql
+
+
+--if 문
+if 조건 then
+	명령;
+[else if 조건 then
+	명령;]
+[else 
+	명령;]
+end if;
+
+
+declare
+	i number := 17;
+begin
+	if i >10 then
+		dbms_output.put_line('i값은 10보다 큼');
+	else
+		dbms_output.put_line('i값은 10보다 작거나 같다');
+	end if;
+end;
+/
+
+--파일실행 : 파일 깨질 땐 인코딩 들어가서 안시로 변환
+set serveroutput on
+@d:\study\oracle\0929-2.sql
+
+
+--for 문
+for 변수 in 초기값..최대값 loop
+	명령어;
+end loop;
+end;
+/
+
+declare
+begin
+for i in 1..10 loop
+	dbms_output.put_line(i);
+end loop;
+end;
+/
+
+set serveroutput on
+@d:\study\oracle\0929-3.sql
+
+
+
+--while 문
+while 조건 loop
+	명령어
+end loop;
+
+
+declare
+	i number :=0;
+begin
+	while i < 10 then
+		dbms_output.put_line(i);
+		i:=i+1
+	end loop;
+end;
+/
+
+set serveroutput on
+@d:\study\oracle\0929-4.sql
+
+
+--loop 문
+loop
+	명령;
+end loop;
+
+declare
+	i number := 0;
+begin
+	loop
+		dbms_output.put_line(i);
+		i := i + 1;
+		if i < 10 then
+			exit;
+		end if
+	end loop;
+end;
+/
+
+set serveroutput on
+@d:\study\oracle\0929-5.sql
+
+--exit 문 : 반복문에서 탈출
+
+
+== PL-SQL 에서의 변수 선언 (%는 그타입과 같은 타입이라는 뜻)
+declare 
+	dday date ;
+	pdeptno number(30) not null := 99;
+	ppay sawon.sapay%type;
+	pname sawon.saname%type;
+	a sawon%rowtype;              -> 접근시 a.sabun, a.saname..
+	
+begin
+	....
+end;
+/
+
+--accept : 키보드로 부터 값을 입력 받음, 
+	변수의 값은 프로그램 내에서 &변수의 형태로 사용불가
+accept 변수 prompt '문자열'
+
+--PL-SQL 에서의 select 문자열
+select ~ into 의 형태로 사용
+
+
+
+--실습 사번을 입력받아 해당 사원의 이름, 급여 출력
+set verify off
+accept num prompt '사번='
+declare
+	pname sawon.saname%type;
+	ppay sawon.sapay%type;
+begin
+	select saname, sapay into pname, ppay from sawon
+	where sabun = &num;
+	dbms_output.put_line(pname||'의 급여는 '||ppay);
+end;
+/
+
+@d:\study\oracle\0929-6.sql
+
+
+--실습 특정 사번의 전부 출력
+declare
+	a sawon%rowtype;
+begin
+	select * into a from sawon
+	where sabun = 7;
+	dbms_output.put_line(a.saname||a.sajob||a.sahire);
+end;
+/
+
+@d:\study\oracle\0929-7.sql
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

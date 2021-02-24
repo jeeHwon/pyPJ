@@ -1,0 +1,310 @@
+<Oracle> 201005
+
+
+--숫자 두개 입력 받아 합 구하는 함수
+set verify off
+set serveroutput on
+
+accept no1 prompt '숫자1='
+accept no2 prompt '숫자2='
+
+declare
+	hap number := 0;
+begin
+	hap := &no1+&no2;
+	dbms_output.put_line(hap);
+end;
+/
+
+--사원번호 입력받아 그 사원의 보너스를 계산하여 보너스 변경
+-급여가 1000 이하 => 급여의 10%
+-급여가 2000 이하 => 급여의 15%
+-급여가 3000 이하 => 급여의 20%
+-급여가 3000 초과 => 급여의 25%
+
+set verify off
+accept no prompt '사원번호= '
+
+declare
+	ppay personnel.pay%type;
+	
+begin
+	select pay into ppay from personnel where pno=&no;
+	if ppay <=1000 then
+		update personnel set bonus =ppay*0.1 where pno=&no;
+	elsif ppay>1000 and ppay <= 2000 then
+		update personnel set bonus =ppay*0.15 where pno=&no;
+	elsif ppay>2000 and ppay <= 3000 then
+		update personnel set bonus =ppay*0.2 where pno=&no;
+	else
+		update personnel set bonus =ppay*0.25 where pno=&no;
+	end if;
+end;
+/
+
+==커서 : sql 문을 실행할때 마다 처리를 위한 메모리 공간
+--묵시적 커서 : 오라클이 자동으로 생성, 묵시적 커서에 저장되는 데이터는 1행만 가능
+--명시적 커서 : 사용자가 선언하여 사용하고 사용이 끝난 후 정리작업
+
+--명시적커서의 속성
+커서명%isopen : 열려있다
+커서명%notfound : 행이 없다
+커서명%found : 행이 있다
+커서명%rowcount : 처리된 행의 수
+
+--묵시적커서의 속성
+sql%isopen : 열려있다
+sql%notfound : 행이 없다
+sql%found : 행이 있다
+sql%rowcount : 처리된 행의 수
+
+
+--커서 기본 형식
+declare
+	cursor 커서명 is select 절;
+
+begin
+	open 커서명; --1.커서열기
+		loop
+			fetch 커서명 into 변수 ; --2.커서로부터 값을 가져와 변수에 할당(by 한행)
+				반복 명령; 
+		end loop;
+	close 커서명;
+end;
+/
+
+--모든 사원의 이름, 급여, 직책 출력
+
+set verify off
+set serveroutput on
+
+declare
+	cursor c1 is select pname, pay, job from personnel;
+	cname personnel.pname%type;
+	cpay personnel.pay%type;
+	cjob personnel.job%type;
+	
+begin
+	open c1;
+		loop
+			fetch c1 into cname, cpay, cjob;
+			if c1%notfound then
+				exit;
+			end if;
+			dbms_output.put_line(cname||' '||cpay||' '||cjob);
+		end loop;
+	close c1;
+end;
+/
+
+--이름, 급여, 입사일, 근무기간, 급여순위를 구하여 personnel_r 테이블에 삽입
+create table personnel_r (
+pname varchar2(20),
+pay number,
+startdate date,
+gigan varchar2(30),
+rank number(3)
+);
+
+-형식1
+declare
+	cursor c2 is select pname, pay, startdate from personnel;
+	cpname personnel.pname%type;
+	cpay personnel.pay%type;
+	cstartdate personnel.startdate%type;
+	cgigan personnel_r.gigan%type;
+	crank personnel_r.rank%type;
+begin
+	delete from personnel_r;
+	open c2;
+		loop
+			fetch c2 into cpname, cpay, cstartdate;
+				exit when(c2%notfound); 
+				
+				cgigan := floor(months_between(sysdate, cstartdate)/12)||'년'||
+					floor(mod(months_between(sysdate, cstartdate),12))||'개월';
+				select count(*) into crank from personnel where pay>cpay;	
+				crank := crank+1;
+				insert into personnel_r values(cpname, cpay, cstartdate, cgigan, crank);
+			
+		end loop;
+	close c2;
+	commit;
+end;
+/
+
+-형식2
+declare
+	cursor 커서명 is select 절;
+begin
+	for 변수 in 커서명 loop
+		반복할 명령
+		
+
+--형식2 적용		
+declare
+	cursor c2 is select pname, pay, startdate from personnel;
+	cgigan personnel_r.gigan%type;
+	crank personnel_r.rank%type;
+begin
+	delete from personnel_r;
+	for i in c2 loop
+		cgigan := floor(months_between(sysdate, i.startdate)/12)||'년'||
+					floor(mod(months_between(sysdate, i.startdate),12))||'개월';
+		select count(*) into crank from personnel where pay>i.pay;
+		insert into personnel_r values (i.pname, i.pay, i.startdate, cgigan, crank);
+		
+	end loop;
+	commit;
+	
+end;
+/	
+
+
+==case 문
+case [조건]
+	when 조건1 then 실행1
+	when 조건2 then 실행2
+	...
+	[else 실행]
+end case;
+
+--사원의 보너스를 계산하여 이름, 급여, 보너스를 출력(case 문 적용)
+-급여가 1000 이하 => 급여의 10%
+-급여가 2000 이하 => 급여의 15%
+-급여가 3000 이하 => 급여의 20%
+-급여가 3000 초과 => 급여의 25%
+
+set verify off
+set serveroutput on
+
+
+declare
+	cursor c3 is select pname, pay from personnel;
+	bo number; 
+	
+begin
+	for i in c3 loop
+		case 
+			when i.pay<=1000 then 
+				bo := i.pay*0.1;
+			when i.pay<=2000 then 
+				bo := i.pay*0.15;
+			when i.pay<=3000 then 
+				bo := i.pay*0.2;
+			else 
+				bo := i.pay*0.25;
+		
+		end case;
+		dbms_output.put_line(i.pname||' '||i.pay||' '||bo);
+	end loop;
+
+end;
+/
+
+--sung 테이블 읽어 result 값 출력
+create table sung(
+	name varchar2(20),
+	kor number(3),
+	eng number(3),
+	mat number(3)
+	);
+
+insert into sung values('둘리', 90, 44, 94);
+insert into sung values('달리', 100, 88, 93);
+insert into sung values('덜리', 95, 86, 80);
+insert into sung values('돌리', 80, 77, 25);
+insert into sung values('뒬리', 70, 98, 46);
+
+create table result(
+	name varchar2(20),
+	kor number(3),
+	eng number(3),
+	mat number(3),
+	ave number(6,2),
+	tot number(3),
+	grd varchar2(20)
+	);
+
+declare
+	cursor c4 is select name, kor, eng, mat from sung;
+	cavg result.ave%type;
+	ctot result.tot%type;
+	cgrd result.grd%type;
+	
+begin
+	delete from result;
+	for i in c4 loop
+		
+		ctot := i.kor+i.eng+i.mat;
+		cavg := ctot/3;
+		
+		if cavg>=90 then 
+			cgrd := '수';
+		elsif cavg>=80 then 
+			cgrd := '우';
+		elsif cavg>=70 then 
+			cgrd := '미';
+		elsif cavg>=60 then 
+			cgrd := '양';
+		else 
+			cgrd := '가';
+		
+		end if;
+	insert into result 
+		values (i.name, i.kor, i.eng, i.mat, cavg, ctot, cgrd);	
+	
+	end loop;
+
+end;
+/
+
+==예외 : pl/sql이 실행되는 동안 발생되는 에러, 런타임에러(오라클예외 & 사용자정의 예외)
+--형식
+declare
+
+begin
+	exception
+		when 예외이름1 then	
+			처리내용1
+		when 예외이름2 then
+			처리내용2
+			...
+		when others then
+			처리내용         => 위에 정의된 예외에 속하지 않는 경우
+	end;
+/
+
+--사원번호를 입력받아 
+set verify off
+set serveroutput on
+
+accept no prompt '사원번호 = '
+
+declare
+	ppname personnel.pname%type;
+	ppay personnel.pay%type;
+	
+begin
+	select pname, pay into ppname, ppay from personnel
+		where pno=&no;
+	dbms_output.put_line(ppname||' '||ppay);
+	exception
+		when no_data_found then
+			dbms_output.put_line('해당 사원이 없습니다');
+		when too_many_rows then
+			dbms_output.put_line('사원이 두명 이상입니당');
+		when others then
+			dbms_output.put_line('관리자에게 물어봐');
+end;
+/
+
+
+
+
+
+
+
+
+
+
