@@ -1,0 +1,130 @@
+<Java> 200921
+
+==운영체제
+--단축키
+F2 : 파일의 이름을 변경한다.
+F3 : 파일 찾기
+ * : 모든 글자 이상을 대체하는 와일드카드 문자
+ 
+==윈도우
+--도스명령어
+dir : 디렉토리 파일 확인하고 (리눅스는 ls)
+md : 디렉토리 생성
+rd : 디렉토리 삭제
+cd : 디렉토리 이동
+① cd 디렉터리명 : 특정 디렉터리로 이동한다. 
+② cd.. : 상위 디렉터리로 이동한다. 
+③ cd/ : 최상위 디렉터리로 이동한다. 
+다른 드라이브 갈땐 바로 D:
+절대경로 vs 상대경로
+ipconfig : ip 정보확인
+ipconfig -all : 더 자세한 ip 정보확인
+메타데이터 : 데이터를 위한 데이터
+컴퓨터 이름은 영어로 설정 권장
+
+==데이터베이스
+RDBMS(relational data base management system 관계형 데이터베이스 관리 시스템)
+: oracle, MySQL MS-SQL, mariaDB, 오라클(Oracle), MS SQL 서버(MS SQL Server),
+액세스(Access), 인포믹스(Informix)
+설계순서 : 1)개념적 2)논리적 3)물리적 데이터설계
+
+--관계형 데이터베이스 명령어 종류
+DDL(Data Definition Language) : create, alter, drop, rename, truncate
+DML (Data Manipulation Language) : insert(입력), update(수정), delete(삭제)
+DCL (Data Control Language) : grant, revoke
+TCL (Transaction Control Language) : commit, rollback, savepoint
+Query : select(조회)
+
+==정보통신
+
+OSI 7계층(Open Systems Interconnection.개방형 시스템)
+
+7계층 – 응용 계층(Application)
+OSI 7계층 중 최상위 계층이며, 사용자가 직접 눈으로 보고 실제로 작업을 하는 계층이다.  웹 브라우저, HTTP, FTP, WWW, Telnet, SMTP, POP 등의 사용자와 직접적으로 상호작용 하는 모든 응용 프로그램들이
+속한다.  
+6계층 – 표현 계층(Presentation)
+표현 계층은 data의 Format(형식)을 정의한다. 일반적으로 응용프로그램 형식을 준비 또는 네트워크 형식으로 변환하거나
+네트워크 형식을 응용프로그램 형식으로 변환하는 것을 나타낸다. 즉, 서로 다른 환경의 컴퓨터와 Application들이 data를
+서로 이해 할 수 있도록 도와주는 계층이다. JPEG, TIFF, GIF(그래픽 포맷), MPEG, QUICKTIME(동영상 포맷), MIDI(음악
+포맷), RTF, ASCII, EBCDIC(텍스트 포맷)등을 지정 한다. data의 압축(compression), 암호화(Encryption)의 기능도 수행한다.   
+5계층 – 세션 계층(Session)
+통신의 일을 책임지고 있는 계층이다. 2대의 기기, 컴퓨터 또는 서버 간에 통신을 하기 위해서는 세션(session)을 만들어야
+하는데 이 작업이 여기서 처리된다.  네트워크 연결을 성립(Establishment), 제어와 운영(Manage and Control), 연결의 종료(Terminate)를 책임진다. 또, 각각의
+알맞은 Application으로 Data를 보내기 위해서 Application으로부터 들어오는 Data들을 분리해서 유지해 주는 기능을 수행한
+다. OS(Operating System)가 이 계층에 속한다. 
+
+4계층 – 전송 계층(Transport)
+전송 계층은 Data의 전송을 담당한다. 보낼 데이터의 용량과 속도, 목적지 등을 처리한다. 대표적으로 TCP와 UDP가 있는데,  TCP는 인터넷 프로토콜(IP) 위에 구축되어 TCP/IP로 합쳐서 부른다. 기기의 IP 주소가 여기서 작동한다. Data가 잘 전송되고 있는지 확인하고 만약 중간에 에러가 발생하면 이를 알아내서
+다시 에러난 부분을 재전송해 준다. 반면 UDP는 Data를 보낸 후 아무것도 하지 않는다.  TCP는 연결 지향 프로토콜(Connection oriented Protocol), UDP는 비연결 지향 프로토콜(Connectionless Protocol)이라
+한다. 
+3계층 – 네트워크 계층(Network)
+네트워크 계층의 가장 중요한 일은 패킷을 목적지까지 가장 빠른 길로 전송하는 역할이다. 이 계층에서 사용되는 장비로
+Router가 있다. 이 계층에서는 에러가 생기든 말든 일단 보내는 것에 중점을 둔다. 에러가 나면 상위 계층에서 해결해
+주기 때문에 에러에 신경쓰지 않는다. 이 네트워크 계층에서 사용되는 프로토콜로는 IP, IPX, ICMP, ARP 등이 있다.  
+2계층 – 데이터 링크 계층(Data Link)
+Data Link Layer는 Data의 물리적인 전송(직접 연결된 노드 간)을 담당하고, Error Notification(에러 검출), Flow Control(흐름
+제어) 등을 다룬다. Data 전송시 에러가 발생하면 Data Link 계층에서 검출을 하고 Transport Layer에서 그 에러를 수정한다. 데이터 링크 계층에서 사용되는 장비로는 Bridge, Switch가 있다. 
+프로토콜은 HDLC, PPP, Frame-Relay, FDDI, ATM 등이 있다. 
+Data Link 계층은 두 가지 SubLayer로 나뉘는데, MAC과 LLC이다. MAC은 MAC(Media Access Control) 주소를 이용해서
+Data를 해당 장비로 보내는 것이고, LLC는 각 장비를 논리적으로 연결하고 유지하는 역할을 한다. 
+1계층 – 물리 계층(Physical)
+물리 계층은 Data를 전기신호로 바꿔주는 역할을 한다. 케이블 종류, 무선 주파수, 핀 배치, 전압, 물리 요건 등이 포함된다. 장비
+로는 Hub, Repeater, Cable
+--------------------------------------------
+
+문제
+PC방에서 오버워치를 하는데 연결이 끊겼다. 어디에 문제가 있는지 확인하기 위해서는?
+Q.모든 PC가 문제가 있다면?
+A.라우터의 문제(3계층 네트워크 계층)이거나
+ 광랜을 제공하는 회사의 회선 문제(1계층 물리 계층)
+Q.한 PC만 문제가 있고   오버워치 소프트웨어에 문제가 있다면?
+A. 7계층 어플리케이션 계층
+Q.오버워치 소프트웨어에 문제가 없고, 스위치에 문제가 있으면?
+A.2데이터링크 계층
+있다고 판단해 다른 계층에 있는 장비나 소프트웨어를 건들이지 않는것이다.
+
+ping test : cmd > ping 본인 IP주소 or 127.0.0.1
+
+TCP : 신뢰성O / 연결지향적 / 다중 송수신 / 동시가능 / 무결성 확인 O /대역폭 제한O / 부하시 조절가능
+UDP : 신뢰성X / 비연결지향적 / 무결성기능X / 네트워크부담 적어 / 일방향성
+
+
+네트워크의 클라이언트 서버 모델 분산 구조 : 분산 구조
+
+==개발환경 구축
+-프로그래밍언어 환경 구축
+1) 프로그래밍언어 : JAVA
+2) 소스코드 편집툴 : 이클립스 
+3) 웹서버 : 아파치-Tomcat
+
+- 환경 변수 만들기 :
+ “내 PC” 속성 -> 고급 시스템 설정 -> 환경 변수 -> 시스템 환경변수 -> 새로만들기
+JAVA_HOME : 자바를 설치,설정해야하는 환경변수 중에서 자바의 설치위치를 지정하는 환경변수
+환경변수 “PATH” 선택 -> 편집 -> “%JAVA_HOME%\bin;”을 앞에 추가
+
+- JAVA 실행 확인
+ 화면 좌측 하단(기본 설정의 경우)에 있는 윈도우 아이콘에서 오른쪽 마우스 버튼을 클릭한다.
+ 핫메뉴에서 “명령프롬프트”를 클릭한다. “java –version” 명령어와 “javac –version” 
+ 명령어를 입력하여 실행을 확인한다.
+ 
+
+
+==
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+ 

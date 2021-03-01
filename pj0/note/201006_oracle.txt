@@ -1,0 +1,372 @@
+<Oracle> 201006
+
+==사용자 정의 예외
+declare
+	예외 이름 exception;
+begin
+	...
+	raise 예외이름;
+	exception
+		when 예외이름1 then
+			처리내용
+		..
+		when others then
+			처리내용
+end;
+/
+
+--사번과 급여를 입력받아 해당 사원의 급여를 수정 단, 급여가 2000보다 작으면 예외이름
+set serveroutput on
+set verify off
+accept no prompt '사번 =>'
+accept sal prompt '급여 =>'
+
+declare
+vpno personnel.pno%type;
+vpay personnel.pay%type;
+vpname personnel.pname%type;
+minpay exception;
+
+begin
+	if &sal<2000 then	
+		raise minpay;
+	end if;
+	select pno, pay, pname into vpno,vpay,vpname 
+		from personnel where pno=&no;
+	update personnel set pay=&sal where pno=&no;
+	dbms_output.put_line(vpname||'의 급여가'||&sal||'로 수정됨');
+	exception
+		when no_data_found then
+			dbms_output.put_line('해당 사원 없음');
+		when too_many_rows then	
+			dbms_output.put_line('사원이 두명이상');
+		when minpay then
+			dbms_output.put_line('급여 췤');
+end;
+/
+
+==프로시져 : 자주 사용되는 sql 또는 pl-sql을 미리 컴파일 하여 db에 저장한 객체
+--어플리케이션에서 많이 사용
+create procedure 프로시저명
+alter procedure 프로시저명
+drop procedure 프로시저명
+show error
+
+--파라미터 변수 : 변수선언시 길이를 주지 않는다
+	in : 프로시저 호출시 서버로 값을 가지고 들어가는 변수, 기본값으로 생랼가능
+	out : 프로시저 처리된 결과를 반환하는 함수
+
+	
+--형식
+create or replace procedure 프로시저명
+	(파라미터 변수)
+	is
+	변수선언
+begin
+
+end;
+/
+
+--사번을 입력받아 해당 사원을 삭제
+create or replace procedure p1
+(no number)
+is
+begin
+delete personnel where pno=no;
+end;
+/
+
+--show error
+exec p1(1111)
+select * from personnel;
+
+--사번과 급여를 입력받아 해당 사원의 급여 수정
+create or replace procedure p2
+(no number,
+won number)
+is
+begin
+update personnel set pay=won where pno=no;
+end;
+/
+
+execute p2(1112,3333)
+select * from personnel;
+
+--이렇게 프로시저 만들어 놓고 자바나 파이썬에서 얘만 호출해주면 돼
+
+
+--부서번호와 보너스비율을 입력받아 해당 부서의 보너스 금액을 수정됨
+--단 보너스비율은 5%~20% 사이여야 함수
+create or replace procedure p3
+(no number,
+yool number)
+is
+minyool number := 0.05;
+maxyool number := 0.2;
+yoolexec exception;
+dnoexec exception;
+begin
+if yool between minyool and maxyool then
+	update personnel set bonus=pay*yool where dno=no;
+	if sql%notfound then
+		raise dnoexec;
+	end if;
+else
+	raise yoolexec;
+end if;
+exception
+	when yoolexec then
+		dbms_output.put_line('보너스 비율 범위가 아닙니다');
+	when dnoexec then
+		dbms_output.put_line('부서 번호좀 확인좀해라좀제발');
+end;
+/
+
+execute p3(40,0.15)
+select * from personnel;
+
+
+--두수를 입력받아 곱을 반환
+create or replace procedure p4
+(n1 number,
+n2 number,
+n3 out number)
+is
+begin
+	n3 := n1*n2;
+	
+end;
+/
+
+-> 실행시에 변수 선언 먼저
+variable result number  
+execute p4(89, 6, :result)
+print result
+
+
+==퍼스널 테이블에 기본 키제약 추가
+--신입사원 등록(사번, 이름, 부서번호를 입력)
+--단 해당부서에 직원이 없으면 예외처리
+
+--원트
+create or replace procedure p5
+(no number,
+name varchar2,
+buno number)
+is
+begin
+	insert into personnel (pno, pname, dno)
+	values (no, name, buno);
+end;
+/
+
+--모답
+create or replace procedure p5
+(vpno personnel.pno%type,
+vpname personnel.pname%type,
+vdno personnel.dno%type)
+is
+invaliddno exception;
+cnt number;
+begin
+	select count(*) into cnt from division where dno=vdno;
+	if cnt<1 then 
+		raise invaliddno;
+	end if;
+	insert into personnel (pno, pname, dno)
+		values (vpno, vpname, vdno);
+exception
+	when invaliddno then
+		dbms_output.put_line('부서를 확인좀해라좀제발');
+	when others then
+		dbms_output.put_line('관리자에게물어봐');
+end;
+/
+
+execute p5(1001, '슈화', 30)
+select * from personnel;
+
+
+==함수 : 리턴이 있다는 것 제외하고는 프로시저와 동일
+--반드시 리턴값이 있음, 복잡하거나 어려운 계산인 경우 생성하여 사용
+--형식
+create or replace function 함수명
+(파라미터변수)
+return datatype
+is
+변수선언
+begin
+end;
+/
+
+--gogek 테이블에서 주민번호 입력시 성별반환
+create or replace function sexy
+(jumin gogek.gojumin%type)
+return varchar2
+is
+result varchar2(10);
+begin
+	if substr(jumin,8,1)=1 or substr(jumin,8,1)=3 then
+		result:='남자';
+	else 
+		result:='여자';
+	end if;
+	return result;
+end;
+/
+
+select goname, gojumin, sexy(gojumin) from gogek;
+
+--personnel 테이블에서 해당부서 최대급여 같이 출력
+create or replace function fmaxpay
+(vdeptno sawon.deptno%type)
+return number
+is
+maxpay number;
+begin
+select max(sapay) into maxpay from sawon where deptno=vdeptno;
+return maxpay;
+end;
+/
+
+select saname, sapay, deptno, fmaxpay(deptno) from sawon;
+
+
+
+==트리거 : 제약조건으로 구현되지 못하는 부분을 구현시 사용, 국민연금이나 금여계산등
+	데이터베이스의 이벤트에 반응하여 실행되는 프로그램 단위
+--자동호출
+create trigger 트리거명
+	타이밍(before or after) 이벤트 on 테이블명
+begin 
+	...
+end;
+/
+
+create table division_history(
+	memo varchar2(30)
+	);
+	
+create or replace trigger t1
+	after insert on division
+begin
+	insert into division_history values (sysdate||'입력작업');
+end;
+/
+
+insert into division values (1, '전산실','123', '도쿄');
+insert into division values (2, '의무실','123', '홍콩');
+select * from division;
+select * from division_history;
+
+drop trigger t1;
+
+--division 백업 테이블 생성
+delete division;
+select * from division;
+
+create table division_bk
+as
+select * from division;
+
+select * from division_bk;
+
+==행단위 트리거(for each row)
+:old.컬럼명 - 트리거가 처리한 레코드의 원래값 저장, 지금 막 삭제된 행의 컬럼값
+:new.컬러명 - 트리거가 처리한 새값, 지금 막 삽입된 행의 컬럼값
+
+create or replace trigger t_division
+	after insert or update or delete on division
+	for each row
+begin
+	if inserting then
+		insert into division_bk 
+			values(:new.dno, :new.dname, :new.phone, :new.position);
+	elsif updating then
+		update division_bk set dname=:new.dname, 
+								phone=:new.phone,
+								position=:new.position 
+							where dno=:old.dno;
+	elsif deleting then
+		delete from division_bk where dno=:old.dno;
+	end if;	
+end;
+/
+
+insert into division values (1, '전산실','123', '도쿄');
+insert into division values (2, '의무실','123', '홍콩');
+
+select * from division;
+select * from division_bk;
+
+update division set dname='IT부서', phone='000', position='뉴욕'
+	where dno=1;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

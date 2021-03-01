@@ -1,0 +1,200 @@
+<Java> 200917
+package ch03;
+
+//연결연산자
+//문자열과 숫자가 혼합된 +연산식은 왼쪽에서 오른쪽으로 연산이 진행
+public class Ex04 {
+
+	public static void main(String[] args) {
+		System.out.println('j');
+		System.out.println("jdk"+8.0); 
+		//"jdk" + "8"  -> "jkd8" 숫자도 string 형태로 됨
+		String str = "JDK" + 8.0 + 5.0;
+		System.out.println(str); //문자열 뒤에 있는 애들은 다 문자가 된다
+		String str2 = 8.0 + 5.0 + "JDK" + 8.0 + 5.0;
+		System.out.println(str2); //문자열 나오기 전까진 숫자가 문자열화 되진 않는다
+		
+		System.out.println("JDK" + (8.0 + 5.0));
+		
+		
+		
+	}
+
+}
+
+//비교연산자  - 슬라이드 21참고
+/*a>b a는 b 보다 크다  : 초과
+ *a>=b a는 b 보다 크거나 같다 : 이상
+ *a<b a는 b 보다 작다: 미만
+ *a<=b a는 b 보다 작거나 같다 : 이하
+ *a==b a는 b와 같다
+ *a!=b a는 b와 같지 않다.
+ */
+public class Ex05 {
+
+	public static void main(String[] args) {
+
+		
+	}
+
+}
+
+
+//문자열 비교☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★☆★
+// == : 객체의 주소를 비교한다
+//문자열.equals(비교문자열) : 객체의 값을 비교한다
+public class Ex06 {
+
+	public static void main(String[] args) {
+		
+		Ex06 obj1 = new Ex06();
+		Ex06 obj2 = new Ex06();
+		System.out.println("obj1="+obj1);
+		System.out.println("obj2="+obj2);//원래는 주소지가 생기는게 맞아
+		//근데 string은 sout해도 주소 안나오고 보이게끔한거
+		//밑에서 str1~4는 referance 변수다.(주소가 저장되는 참조변수)
+		//string은 클래스타입 str1은 주소를 저장한 참조변수
+		String str1 = "홍길동";
+		String str2 = "홍길동";//이땐 str에 홍길동이라는 리터럴 값이 직접 저장되는것
+		String str3 = new String("홍길동");//이땐 힙 영역에 홍길동이 저장되고 스택의 str3에는 힙을 가리키는 주소가 저장된다
+		String str4 = new String("홍길동");//따라서 str3와 str4은 가리키는 주소가 다르니까 다른것이다
+		
+		System.out.println("str1="+str1);
+		System.out.println("str2="+str2);
+		if(str1==str2) {//조건을 충족하면 실행
+			System.out.println("str1과 2는 일치한다");
+		}
+		else {//조건을 충족하지 않으면
+			System.out.println("str1과 2는 일치하지 않는다");
+		}
+		
+		System.out.println("-------------------");
+		
+		
+		System.out.println("str3="+str3);
+		System.out.println("str4="+str4);
+		if(str3==str4) {//==는 주소를 비교 new 써서 둘이 주소가 다르니 달라
+			System.out.println("str3과 4는 일치한다");
+		}
+		else {//조건을 충족하지 않으면
+			System.out.println("str3과 4는 일치하지 않는다");
+		}
+		
+		System.out.println("-------------------");
+		
+		if(str3.equals(str4)) {//equal은 값을 비교
+			System.out.println("str3과 4는 일치한다");
+		}
+		else {//조건을 충족하지 않으면
+			System.out.println("str3과 4는 일치하지 않는다");
+		}
+						
+	}
+
+}
+
+//논리 연산자
+//연산자 우선순위 : 산술 > 비교 > 논리 > 대입
+//T & T : T
+//F & T : F -> &앞의 결과가 F이더라도 뒤의 결과를 살펴본다
+//T && T : T
+//F && T : F -> &&앞의 결과가 F이면 결과는 무조건 F이므로  뒤의 결과를 보지 않는다
+public class Ex07 {
+
+	public static void main(String[] args) {
+		//&& AND연산자
+		int charCode = 'Q';
+		if (charCode >= 65 && charCode <=90) {
+			System.out.println("대문자~");
+		}
+		if (charCode >= 97 && charCode <=122) {
+			System.out.println("소문자~");
+		}
+		if (charCode >= 48 && charCode <=57) {
+			System.out.println("숫자~");
+		}
+		//|| OR연산자
+		int num = 12;
+		if (num%2==0 || num%3==0 ) {
+			System.out.println(num+"은 2 또는 3의 배수이군요");
+			
+		}
+		else {
+			System.out.println(num+"조건을 만족하지 않군요");
+		}
+
+	}
+
+}
+
+//조건문과 반복문
+//A학점 : 100 ~ 91
+//B학점 : 90 ~ 81
+public class Ex08 {
+
+	public static void main(String[] args) {
+		//if문
+		int score1 = 71;
+		if (score1 <= 100 && score1 >90) {
+			System.out.println("A학점입니다");
+		} else if (score1 <= 90 && score1 >80) {
+			System.out.println("B학점입니다");
+		} else if (score1 <= 80 && score1 >70) {
+			System.out.println("C학점입니다");
+		} else {
+			System.out.println("그외");
+		}
+		
+		//삼항연산자 
+		//
+		//(조건)? 참값 : 거짓값 = if(조건){참값}else{거짓값}
+		//(조건1)? 조건1참값 :(조건2)?조건2참값:조건2거짓값
+		int score2 = 48;
+		String result = (score2>90)? "A학점":(score2>80)?"B학점":"그외";
+		System.out.println(result);
+			
+	}
+	
+}
+
+package ch04;
+
+//switch문
+/*
+switch (조건식) {
+case "값1": 
+	실행코드;
+	break;
+case "값2": 
+	실행코드;
+	break;	
+default:
+	실행코드;
+	break;
+*/
+public class Ex01 {
+
+	public static void main(String[] args) {
+		String bunho = "011";
+		switch (bunho) {
+			case "011":
+			case "017":
+				System.out.println("SK");
+				break;
+			case "016":
+			case "018":
+				System.out.println("KTF");
+				break;
+			case "019": 
+				System.out.println("LG");
+				break;	
+			default:
+				System.out.println("etc");
+				break;
+		}
+	
+	}
+
+}
+
+

@@ -1,0 +1,39 @@
+<Java> 201005
+
+public class Car03 {
+	
+	//field : [접근제한자] [속성] 데이터타입.변수명;
+	String company = "porsche";
+	String model;
+	String color;
+	int maxSpeed;
+	
+	//constructor : [접근제한자] 클래스명(매개변수리스트){}
+	
+	//default constructor
+	Car03 (){
+	}
+	
+	//model 초기화 생성자
+	Car03(String kmodel) {
+		model = kmodel;
+	}
+	
+	//model, color 초기화 생성자
+	Car03(String kmodel, String kcolor) {
+		model = kmodel;
+		color = kcolor;
+	}
+	
+	//model, color, maxSpeed 초기화 생성자
+	Car03(String kmodel, String kcolor, int kmaxSpeed) {
+		model = kmodel;
+		color = kcolor;
+		maxSpeed = kmaxSpeed;
+	}
+		
+	//method : [접근제한자] [속성] 리턴유형 메소드명(매개변수리스트){}
+	
+			
+
+}

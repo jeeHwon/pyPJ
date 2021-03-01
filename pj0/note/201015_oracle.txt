@@ -1,0 +1,93 @@
+<Oracle> 201015
+
+==파이썬 다운
+Windows x86-64 executable installer
+C:\python\에 설치경로 지정(귀찮으니까) 나중에 버전별로 정리
+
+
+==파이참 다운
+commmnity ver
+프로젝트창 : alt + 1 
+주석 : ctrl + /
+
+==웹페이지 사용기술 : html + css + javascript(jquery)
+html : 웹페이지 구성
+css : 스타일 적용
+javascript : 사용자 반응 처리
+
+==HTML 구조(*.html, *.htm --대소문자 구분 X)
+tag(< >) : 요소를 만들 떄 사용하는 기호
+시작, 끝 있는 tag : <h1>..내용..</h1>
+단독으로 사용하는 tag : 
+	html5 : <br>
+	xhtml : <br/> --개발자들이 선호
+	
+<!DOCTYPE html> <!--html5 임을 브라우져에게 알려줌-->
+<html> <!--html의 루트요소, lang 속성 입력가능-->
+    <head> <!--body에 필요한 css3 또는 js 제공-->
+        <meta lang ='kor'>
+        <title>html</title>
+    </head>
+    <body> <!--사용자에게 실제 보여지는 부분-->
+        <h1>first homepage </h1>
+        <h2> </h2>
+    </body>
+</html>
+
+--기본 tag
+br : 줄바꿈 <br> or <br/>
+p : 패러그래프
+<hn>~<hn> :제목태그(줄바꿈포함) n=1~6
+https://www.w3schools.com/tags/default.asp
+
+--글자모양태그
+<hr>
+<hr width="70" >
+<hr width="70%" >
+
+--html의 색
+<!--<body bgcolor="yellow">-->
+<!--<body bgcolor="#c6f2cd">  --rgb 16진수값-->
+<body bgcolor="rgb(255,0,100)">  <!--rgb 값-->
+<font size= color=>
+
+--특수문자
+공백 &nbsp;
+<   &lt;
+>   &gt;
+&   &amp;
+
+--목록태그
+ol :ordered list
+ul :unordered list
+--목록요소
+li : ol 또는 ul 의 자식요소로 사용
+
+--이미지태그
+src : 그림경로
+alt : 그림 없을 때 나오는 글자
+width : 그림너비 지정
+height : 그림높이 지정
+
+
+
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+

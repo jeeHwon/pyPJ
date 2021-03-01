@@ -1,0 +1,15 @@
+<Server> 1120
+MVC(Model View Controller)
+Model : view = controller의 데이터 표준화
+View : 화면에 표시
+Controller : 요청을 받아서 여떤걸 처리할지
+
+controller & view ->JSP
+MVC model 1
+
+controller > Servlet(JAVA) : url을 입력
+view -> JSP : html을 출력
+Servelet(개발자) -> model ->JSP(디자이너)
+MVC model 2
+
+

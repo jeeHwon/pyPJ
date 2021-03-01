@@ -1,0 +1,158 @@
+<Oracle> 201007
+
+
+==트리거
+--loan 테이블에 데이터 입력되면 emp 테이블 바꾸기
+create table emp(
+	eno number(3),
+	name varchar2(15),
+	w_ck varchar2(1) default 'n'
+	);
+
+insert into emp values (1, 'kim', 'n');
+insert into emp values (2, 'jim', 'n');
+insert into emp values (3, 'bim', 'n');
+
+create table loan(
+	eno number(3),
+	won number
+	);
+	
+create trigger 트리거명
+	타이밍(before or after) 이벤트 on 테이블명
+begin 
+	...
+end;
+/
+
+	
+create or replace trigger t_emp_loan
+	after insert or delete on loan
+	for each row
+begin
+	if inserting then
+		update emp set w_ck='y' where eno=:new.eno;
+	elsif deleting then
+		update emp set w_ck='n' where eno=:old.eno;
+	end if;
+end;
+/
+
+insert into loan values(2,3000);
+insert into loan values(1,100);
+select * from loan;
+select * from emp;
+
+delete from loan where eno=2;
+select * from loan;
+select * from emp;
+
+
+==누가 무엇을 건드렸는지 히스토리(로그)테이블 만들기(입력:i / 수정:u / 삭제:d)
+create table emp2(
+	eno number(3) primary key,
+	ename varchar2(10),
+	hp varchar2(10)
+	);
+	
+create table emp2_his(
+	no number primary key, --자동증가하게 만들기
+	userid varchar2(30),
+	work varchar2(1),  --i,u,d
+	workdate varchar2(30),
+	eno number(3),
+	ename varchar2(10),
+	hp varchar2(10),
+	newename varchar2(10),
+	newhp varchar2(10)
+	);
+
+--시간 설정하기
+select sysdate from dual;
+alter session set nls_date_format='yy-mm-dd-hh24:mi:ss';
+select sysdate from dual; --시간 시분초 단위로 바꾸기
+
+--자동증가 시퀀스 만들기
+create sequence emp2_his_seq;
+
+--트리거 만들기
+create or replace trigger t_emp2
+	after insert or update or delete on emp2
+	for each row
+begin
+	if inserting then
+		insert into emp2_his (NO, USERID, WORK, WORKDATE,
+		ENO, ENAME, HP)
+			values(emp2_his_seq.nextval,user,'i',sysdate,
+			:new.eno,:new.ename,:new.hp);
+	elsif updating then
+		insert into emp2_his values(emp2_his_seq.nextval,
+		user,'u',sysdate,:old.eno,:old.ename,:old.hp,
+		:new.ename,:new.hp);
+	elsif deleting then
+		insert into emp2_his (NO, USERID, WORK, WORKDATE,
+		ENO, ENAME, HP)
+			values(emp2_his_seq.nextval,user,'d',sysdate,
+			:old.eno,:old.ename,:old.hp);
+	end if;
+end;
+/
+
+grant insert, update, delete, on emp2 to public;
+insert into emp2 values (1, 'park', '1234');
+select * from emp2;
+select * from emp2_his;
+
+conn hr/hr
+insert into happy.emp2 values (2, 'choi', '1111');
+update happy.emp2 set ename='ppp', hp='0000' where eno=1;
+
+conn happy/day
+select * from emp2;
+select * from emp2_his;
+
+conn scott/tiger
+delete from happy.emp2 where eno=2;
+
+==상세 개념적 모델링 ->eXERD
+
+	
+
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,108 @@
+<Oracle> 200916
+==날짜
+날짜 - 날짜 = 숫자
+날짜 + 숫자 = 날짜
+날짜 + 숫자 / 24 = 날짜에 시간을 더함
+날짜 + 숫자 / 1440 = 날짜에 분을 더함
+select sysdate from dual;
+alter session
+	set nls_date_format = 'yy-mm-dd hh:mi:ss am' ;
+select sysdate from dual;
+select sysdate, sysdate+1,sysdate+1/24,sysdate+1/1440 from dual;
+select saname,sahire,months_between(sysdate,sahire) from sawon;
+select saname,sahire,add_months(sysdate,2) from sawon;
+select sysdate,add_months(sysdate,5),last_day(sysdate) from dual;
+select sysdate,next_day(sysdate,'금') from dual;
+
+
+==사원테이블에서 이름, 입사일, 근무기간 출력
+==단 근무기간은 xx년 xx개월 형태
+select saname, sahire from sawon;
+select saname, sysdate-sahire from sawon;
+select saname, months_between(sysdate,sahire) 개월 from sawon;
+예 27개월 xxxx근무 ==> 27/12 2년 3개월
+select saname,
+	floor(months_between(sysdate,sahire)/12)||'년'||
+	floor(mod(months_between(sysdate,sahire),12))||'개월' 근무기간 
+	from sawon;
+	
+==데이터형 변환
+to_char
+to_number
+to_date
+select 10000,to_char(10000) from dual;
+select 10000,to_char(10000, '$99,999') from dual;
+select 10000,to_char(10000, '$000,000') from dual;
+select saname,to_char(sahire,'yyyy"년" mm"월" dd"일"')from sawon;
+select '5000',to_number('5000') from dual;
+
+==그룹함수
+select * from sawon;
+select count(*) from sawon;
+select sum(sapay), avg(sapay), min(sapay), max(sapay) from sawon;
+--직책별 급여의 평균
+select sajob, avg(sapay) from sawon
+	group by sajob;
+--직책별 급여의 평균과 인원수	
+select sajob, avg(sapay),count(*) from sawon
+	group by sajob;	
+--부서별 최대급여, 최소급여, 급여평균
+select sajob 직책, max(sapay) 부서최대, min(sapay) 부서최소, avg(sapay) 부서평균, count(*) 부서인원 from sawon
+	group by deptno;
+--부서별 최소급여, 최대급여, 급여평균, 인원수(단, 급여평균이 2000이상)
+( 여기서 where 안쓰고 having 쓴다. 그룹절의 경우에는 이렇게 씀)
+select min(sapay), max(sapay), avg(sapay), count(*) from sawon
+		group by deptno
+		having avg(sapay) >= 2000;
+--사원테이블에서 과장, 대리, 부장의 급여합계와 인원수 출력
+select sajob, sum(sapay), count(*) from sawon	
+	group by sajob
+	having sajob='과장' or sajob='대리' or sajob = '부장';
+select sajob, sum(sapay), count(*) from sawon	
+	group by sajob
+	having sajob in ('과장', '부장', '대리');
+--조인
+select * from personnel;
+select * from division;
+--사번, 이름, 급여, 부서번호, 부서명, 부서전화번호 => 경우의 수가 길어짐
+select pno, pname, pay, personnel.dno, dname, phone 
+	from personnel, division;  
+--Equi 조인
+select pno, pname, pay, personnel.dno, dname, phone 
+	from personnel, division
+	where personnel.dno=division.dno;
+--테이블명에 별칭주기
+select pno, pname, pay, p.dno, dname, phone 
+	from personnel p, division d
+	where p.dno=d.dno;
+
+==
+select * from student;
+select * from score; --접수번호, 수능점수, 내신점수
+select * from tech;  --접수번호, 면접점수, 체력장
+select * from part;
+--접수번호, 이름, 출신학교, 수능점수, 내신점수
+select student.bunho, irum, school, s1, s2
+	from student, score
+	where student.bunho=score.bunho;
+--접수번호, 이름, 출신학교, 수능점수, 내신점수, 면접점수, 체력장
+select student.bunho, irum, school, s1, s2, s3, s4
+	from student, score, tech
+	where 
+	student.bunho=score.bunho and
+	student.bunho=tech.bunho;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

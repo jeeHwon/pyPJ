@@ -1,0 +1,220 @@
+<Oracle> 201016
+
+==물리데이터베이스 설계
+1)
+create tablespace autumn
+	datafile 'd:\study\db\autumn.dbf' size 10m;
+	
+2)
+create user machine
+	identified by learning
+	default tablespace autumn;
+	
+3)
+grant connect, resource to machine;
+
+4)
+conn machine/learning
+create table member(
+	mno number constraint member_mno_p primary key,
+	name varchar2(30) ,
+	idno varchar2(13),
+	addr varchar2(100),
+	tel varchar2(20),
+	email varchar2(50)
+	);
+	
+create table sawon(
+	sno number constraint sawon_sno_p primary key,
+	name varchar2(30) ,
+	idno varchar2(13),
+	addr varchar2(100),
+	tel varchar2(20),
+	startdate date,
+	dname varchar2(30),
+	loginid varchar2(30),
+	pass varchar2(30),
+	pay number
+	);
+	
+create table reserve(
+	rno number constraint reserve_rno_p primary key,
+	mno number constraint reserve_mno_f references member(mno),
+	biname varchar2(30),
+	biidno varchar2(13),
+	checkin date,
+	tel varchar2(20),
+	sno number constraint reserve_sno_f references sawon(sno)
+	);
+	
+create table reserveroom(
+	rno number,
+	no number,
+	roomtype varchar2(1) constraint reserveroom_roomtype_c 
+		check (roomtype in ('q','d','s')),
+	checkout date,
+	inwon number,
+	constraint reserveroom_rno_no_p primary key(rno,no),
+	constraint reserveroom_rno_f foreign key(rno) references reserve(rno)
+	);
+	
+create table payment(
+	pno number constraint payment_pno_p primary key,
+	method varchar2(10) constraint payment_method_c check (method in ('cash','card')),
+	vailddate date,
+	ano varchar2(20),
+	rno number, 
+	no number,
+	constraint payment_rno_no_f foreign key (rno,no) 
+		references reserveroom(rno,no)
+	);
+	
+5)
+select object_name, object_type from user objects;
+
+==DB 구현
+1)
+conn system/1q2w3e4r!
+select FILE_NAME, TABLESPACE_NAME from dba_data_files;
+
+2)
+create user summer identified by winter;
+
+3)
+create profile basic limit
+FAILED _LOGIN_ATTEMPTS 3
+SESSION_PER_USER 5
+IDLE_TIME 10;
+
+4)
+select USERNAME, DEFAULT_TABLESPACE, profile from dba_users;
+
+5)
+conn system/1q2w3e4r!
+grant connect, resource to summer;
+
+6) 
+conn summer/winter
+create table board(
+	no number constraint board_no_p primary key,
+	title varchar2(300) constraint board_title_n not null,
+	content varchar2(2000) constraint board_content_n not null,
+	writer varchar2(30) constraint board_writer_n not null,
+	writedate default sysdate,
+	hit number default 0
+	);
+create sequence board_seq;
+
+7)
+alter table board
+	add constraint board_title_u unique(title);
+	
+8)
+create index i_board_writedate
+	on board(writedate);
+
+9)
+grant select on board to public;
+
+10)
+
+==sql 응용
+1)
+set serveroutput on
+conn scott/tiger
+create or replace procedure p1
+(pay number)
+is
+vename emp.ename%type;
+vdname dept.dname%type;
+vsal emp.sal%type;
+vjob emp.job%type;
+begin
+select ename, dname, sal, job into vename, vdname, vsal, vjob
+	from emp, dept where emp.deptno=dept.deptno and sal>pay;
+dbms_output.put_line(vename||' '||vdname||' '||vsal||' '||vjob);
+end;
+/
+exec p1(3000)
+exec p1(2000)
+
+--cursor 이용방법
+conn scott/tiger
+set serveroutput on
+
+create or replace procedure p1
+(pay number)
+is
+cursor c1 is select ename, dname, sal, job
+	from emp, dept where emp.deptno=dept.deptno and sal>pay;
+begin
+for row in c1 loop
+	dbms_output.put_line(row.ename||' '||row.dname||' '||row.sal||' '||row.job);
+end loop;
+end;
+/
+exec p1(3000)
+exec p1(2000)
+
+2)
+create table student(
+	sno..);
+create table student_result(
+	...);
+create or replace trigger t3
+	after insert or update or delete on student
+	for each row
+begin
+if inserting then
+	if (:new.kor+:new.eng+:new.mat)/3 >=60 then
+		insert into student_result values(:new.sno, 'pass');
+	else
+		insert into student_result values(:new.sno, 'fail');
+	end if;
+elsif updating then
+	if (:new.kor+:new.eng+:new.mat)/3 >=60 then
+		update student_result set result='pass' where sno=:old.sno;
+	else
+		update student_result set result='fail' where sno=:old.sno;
+	end if;
+elsif deleting then
+	delete from student_result where sno=:old.sno;
+end if;
+end;
+/
+
+3)
+select deptno, avg(sal), sum(sal), max(sal), min(sal) from emp
+	group by deptno
+	order by avg(sal) desc;
+	
+4)
+select deptno, job, count(*) from emp group by deptno,job;
+
+5)
+select e1.ename, e1.hiredate, e2.ename, e2.hiredate 
+	from emp e1, emp e2
+	where e1.mgr=e2.empno;
+	
+랜덤함수
+스캐너클러스
+메인메소드
+코드주고 오류없이 실행되는데 그 이유를 적어러ㅏ
+코드를 빈칸주고 빈칸매꾸기 왜 그렇게 써야하는지 이유
+출력 예상값 무엇인지 그 이유는
+범위 1~45 난수 발생시키는 코드 (범위 주고서)
+반복문 사용
+스위치문 이용하여 빈칸매꾸기
+배열과 관련된 문제
+라운드 함수
+
+
+
+
+
+
+
+
+
+
+
