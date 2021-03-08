@@ -46,4 +46,3 @@ for line in lines:
     result.append(' '.join(temp))
 # print(result)
 data = ' '.join(result)
-sen = Text
