@@ -150,6 +150,7 @@ def is_finish():
         if cate == False:
             return False
     return True
+    
 def out_meal():
     global meals
     print("=================오늘의 식단=================")
