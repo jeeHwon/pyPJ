@@ -44,6 +44,7 @@ def get_100_foods(cate3):
         # print(err)
         return False
 
+# food list에 100가지씩 food append
 def get_food_list():
     global food_list
     food_cates = ['반찬1','주식','국물','반찬2','반찬3','부식']
@@ -69,6 +70,7 @@ def get_nut_list(nut_id):
 nut_lb, nut_ia, nut_ub = get_nut_list(4)
 
 
+# 영양소 index와 음식 카테고리를 받아 만족하는 음식 하나를 꺼내오는 함수
 def get_food(nut_idx, cur_cate):
     global food_list
     temp = []
@@ -84,6 +86,7 @@ def get_food(nut_idx, cur_cate):
     top_food = df.iloc[df[nut_idx+7].idxmax()].tolist()
     return top_food, cate_idx
 
+# 음식을 받아 현재 영양소 상한선을 초과하는지 확인
 def is_under_ub(food, cur_nut, nut_ub):
     for i in range(len(cur_nut)):
         if nut_ub[i] == 0:
@@ -92,6 +95,7 @@ def is_under_ub(food, cur_nut, nut_ub):
             return False
     return True
 
+# 음식 category를 True로 바꾸고 음식을 식단에 추가
 def add_food(food, cate_idx):
     global cur_nut, meals, cur_cate, food_list
     for i in range(len(cur_nut)):
@@ -100,6 +104,7 @@ def add_food(food, cate_idx):
     cur_cate[cate_idx] = True
     food_list[cate_idx].remove(food)
 
+# 거절횟수를 업데이트
 def add_rejection(nut_idx):
     global cnt_rejection, meals, cur_cate
     cnt_rejection[nut_idx] += 1
@@ -118,11 +123,13 @@ def add_rejection(nut_idx):
         cnt_rejection[nut_idx] = 0
         print(nut_list[nut_idx],f'4회 초과 ====> {top_food[5]}삭제')
 
+# 음식을 food_list에서 제거
 def del_from_foodlist(food, cate_idx):
     global food_list
     food_list[cate_idx].remove(food)
     print("$"*30)
 
+# 영양소 확인하여 음식 추가여부 결정
 def check_nut(nut_lb, cur_nut, cur_cate, nut_ub):
     global nut_list, cnt_rejection, food_list
     for i in range(len(nut_lb)):
@@ -144,6 +151,7 @@ def check_nut(nut_lb, cur_nut, cur_cate, nut_ub):
             continue
     return False
 
+# while문을 break 하기위해 만족 여부 확인
 def is_finish():
     global cur_cate, cur_nut
     for cate in cur_cate:
@@ -151,6 +159,7 @@ def is_finish():
             return False
     return True
     
+# 생성된 식단을 콘솔에 출력
 def out_meal():
     global meals
     print("=================오늘의 식단=================")
@@ -159,6 +168,7 @@ def out_meal():
     # print('필요영양소',nut_lb)
     # print('식단영양소',cur_nut)
 
+# 기본 변수 선언
 food_list = []
 get_food_list()
 meals = []
@@ -172,6 +182,7 @@ nut_list = ['칼로리','탄수화물','식이섬유','지방','리놀레산','a
             '칼슘','인','나트륨','칼륨','마그네슘','철','아연','구리'
 ]
 
+# 정의된 함수를 불러와 실제 돌아가는 함수
 i = 0
 while True:
     if i == 500:
